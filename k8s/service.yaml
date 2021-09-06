@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: smstore-site
+spec:
+  selector:
+    app: smstore-site
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 3000
+      name: http
