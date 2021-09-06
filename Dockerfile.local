@@ -1,0 +1,17 @@
+FROM node:12.16.3-alpine3.9
+
+ENV LANG C.UTF-8
+ENV TZ Asia/Ho_Chi_Minh
+ENV NUXT_HOST=0.0.0.0
+ENV NUXT_PORT=3000
+
+# set the working directory in the container
+WORKDIR /code
+
+# copy project
+COPY . .
+
+# expose 3000 on container
+EXPOSE 3000
+
+CMD ["yarn", "dev"]

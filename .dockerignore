@@ -1,0 +1,11 @@
+charts/
+NOTICE
+LICENSE
+README.md
+node_modules
+.env
+.env.staging
+.env.production
+yarn.lock
+package-lock.json
+.nuxt
