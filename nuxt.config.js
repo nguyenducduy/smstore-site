@@ -32,6 +32,10 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    'ant-design-vue/dist/antd.css',
+    '@/assets/bootstrap.min.css',
+    '@/assets/fonts/font-awesome/css/font-awesome.min.css',
+    '@/assets/global.scss'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -42,6 +46,8 @@ export default {
     { src: '@/plugins/vue-filters.js' },
     { src: '@/plugins/webstorage.js', mode: 'client' },
     { src: '@/plugins/axios.js' },
+    { src: '@/plugins/zk-table.js', mode: 'client' },
+    { src: '@/plugins/antd-ui.js' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -72,6 +78,27 @@ export default {
     vendor: [
       'axios'
     ],
+    'html.minify': {
+      collapseBooleanAttributes: true,
+      decodeEntities: true,
+      minifyCSS: true,
+      minifyJS: true,
+      processConditionalComments: true,
+      removeEmptyAttributes: true,
+      removeRedundantAttributes: true,
+      trimCustomFragments: true,
+      useShortDoctype: true
+    },
+    optimizeCSS: true,
+    parallel: true,
+    babel: {
+      plugins: [
+        ["import", {
+          "libraryName": "antd",
+          "style": true,   // or 'css'
+        }]
+      ]
+    }
   },
 
   router: {

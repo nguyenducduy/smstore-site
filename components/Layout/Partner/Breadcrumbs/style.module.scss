@@ -1,0 +1,21 @@
+@import "@/assets/styles/mixins.scss";
+
+.path {
+  font-size: 16px;
+  color: $black;
+
+  span {
+    &:last-child {
+      font-size: 14px;
+    }
+  }
+}
+
+.arrow {
+  display: inline-block;
+  // margin: 0 rem(2);
+  &:after {
+    display: inline-block;
+    content: '\00bb';
+  }
+}

@@ -1,4 +1,5 @@
 import { WebStorage } from "vue-ls";
+import { notification, Form, message } from "ant-design-vue";
 
 declare global {
   interface Window {
@@ -20,7 +21,8 @@ declare module "vue/types/vue" {
     $bus: any;
     $nprogress: any;
     $form: Form;
-    $notification: any;
+    $notification: typeof notification;
+    $message: typeof message;
     router: any;
     ls: WebStorage;
     $helper: any;
@@ -36,7 +38,8 @@ declare module "vue/types/vue" {
     $bus: any;
     $nprogress: any;
     $form: Form;
-    $notification: any;
+    $notification: typeof notification;
+    $message: typeof message;
     router: any;
     ls: WebStorage;
     $helper: any;
