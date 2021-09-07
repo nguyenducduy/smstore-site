@@ -1,0 +1,14 @@
+mutation registerUser(
+  $full_name: String!
+  $email: String!
+  $phone_number: String!
+) {
+  register_user(
+    full_name: $full_name
+    email: $email
+    phone_number: $phone_number
+  ) {
+    ok
+  }
+}
+

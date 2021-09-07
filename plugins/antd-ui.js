@@ -34,9 +34,11 @@ import {
   BackTop,
   Collapse,
   Card,
-  Timeline
+  Timeline,
+  Alert
 } from "ant-design-vue";
 
+Vue.use(Alert);
 Vue.use(DatePicker);
 Vue.use(Modal);
 Vue.use(Avatar);

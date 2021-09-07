@@ -1,72 +1,65 @@
 <template>
-  <div :class="[$style.login_container]">
-    <div :class="$style.block">
-      <div class="row">
-        <div class="col-lg-12">
-          <div :class="$style.inner">
-            <h3 class="text-3xl text-center m-b-20">OLLI Content Store</h3>
-            <div :class="$style.form">
-              <a-form class="login-form" :form="form" @submit="onSubmit">
-                <a-form-item label="Tài khoản">
-                  <a-input
-                    ref="usernameInput"
-                    v-decorator="[
-                      'username',
+  <div class="min-h-screen pt-24 pb-5 font-sans antialiased bg-gray-900">
+    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-96 sm:m-auto">
+      <h1 class="text-4xl font-bold text-center text-yellow-500">Tiệm của tui<span class="text-blue-500"> Partner</span></h1>
+        <div class="flex flex-col p-10 space-y-6 bg-white rounded-lg shadow">
+          <h1 class="text-xl font-bold text-center">Đăng nhập tài khoản Partner</h1>
+          <a-form class="login-form" :form="form" @submit="onSubmit">
+            <a-form-item label="Tài khoản">
+              <a-input
+                ref="usernameInput"
+                v-decorator="[
+                  'username',
+                  {
+                    rules: [
                       {
-                        rules: [
-                          {
-                            required: true,
-                            message: 'Vui lòng nhập tài khoản'
-                          }
-                        ]
+                        required: true,
+                        message: 'Vui lòng nhập tài khoản'
                       }
-                    ]"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="user"
-                      style="color: rgba(0,0,0,.25);"
-                    />
-                  </a-input>
-                </a-form-item>
-                <a-form-item label="Mật khẩu">
-                  <a-input
-                    type="password"
-                    v-decorator="[
-                      'password',
+                    ]
+                  }
+                ]"
+              >
+                <a-icon
+                  slot="prefix"
+                  type="user"
+                  style="color: rgba(0,0,0,.25);"
+                />
+              </a-input>
+            </a-form-item>
+            <a-form-item label="Mật khẩu">
+              <a-input
+                type="password"
+                v-decorator="[
+                  'password',
+                  {
+                    rules: [
                       {
-                        rules: [
-                          {
-                            required: true,
-                            message: 'Vui lòng nhập mật khẩu'
-                          }
-                        ]
+                        required: true,
+                        message: 'Vui lòng nhập mật khẩu'
                       }
-                    ]"
-                  >
-                    <a-icon
-                      slot="prefix"
-                      type="lock"
-                      style="color: rgba(0,0,0,.25);"
-                    />
-                  </a-input>
-                </a-form-item>
-                <div>
-                  <a-button type="link">Quên mật khẩu?</a-button>
-                </div>
-                <div class="text-right form-actions">
-                  <a-button
-                    type="primary"
-                    htmlType="submit"
-                    class="login-form-button width-150"
-                    :loading="loading"
-                    >Đăng nhập</a-button
-                  >
-                </div>
-              </a-form>
-            </div>
-          </div>
+                    ]
+                  }
+                ]"
+              >
+                <a-icon
+                  slot="prefix"
+                  type="lock"
+                  style="color: rgba(0,0,0,.25);"
+                />
+              </a-input>
+            </a-form-item>
+              <a-button type="link">Quên mật khẩu?</a-button>
+              <a-button
+                type="primary"
+                htmlType="submit"
+                :loading="loading"
+                >Đăng nhập</a-button
+              >
+          </a-form>
         </div>
+      <div class="flex justify-center text-sm text-gray-500">
+        <p>&copy;2021. tiemcuatui.com</p>
       </div>
     </div>
   </div>
@@ -78,15 +71,15 @@ import { Mutation, Getter, Action } from "vuex-class";
 // import loginAdmin from "@/apollo/mutations/loginAdmin.gql";
 
 @Component({
-  name: 'login-page',
+  name: 'partner-login-page',
   layout: 'default',
   head() {
     return {
-      title: 'Đăng nhập dành cho Partner'
+      title: 'Đăng nhập tài khoản Partner'
     };
   }
 })
-export default class LoginPage extends Vue {
+export default class PartnerLoginPage extends Vue {
   @Getter("users/isAuth") isAuth;
 
   form: any = {};
@@ -145,7 +138,3 @@ export default class LoginPage extends Vue {
   }
 }
 </script>
-
-<style lang="scss" module>
-@import "./style.module.scss";
-</style>
