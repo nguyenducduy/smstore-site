@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen pt-24 pb-5 font-sans antialiased bg-blue-900">
-    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-1/4 sm:m-auto">
+    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-1/4 sm:m-auto lg:w-2/5">
       <h1 class="text-4xl font-bold text-center text-yellow-500">Tiệm của tui<span class="text-blue-500"> Partner</span></h1>
         <div class="flex flex-col p-10 space-y-6 bg-white rounded-lg shadow">
           <h1 class="text-xl font-bold text-center">Kích hoạt tài khoản & tiệm</h1>
@@ -8,7 +8,7 @@
             Vui lòng điền đầy đủ thông tin để chúng tôi dễ dàng hỗ trợ bạn cài đặt và sử dụng hệ thống hiệu quả nhất.
           </p>
           <a-form :form="form" @submit="onSubmit" :layout="formLayout">
-            <a-form-item label="Mã kích hoạt" 
+            <a-form-item label="Mã kích hoạt" 
               :label-col="formItemLayout.labelCol"
               :wrapper-col="formItemLayout.wrapperCol"
             >
@@ -67,9 +67,10 @@
             <a-form-item label="Tên miền"
               :label-col="formItemLayout.labelCol"
               :wrapper-col="formItemLayout.wrapperCol"
-              extra="ten_mien.tiemcuatui.com"
+              :extra="`${domainHint}.tiemcuatui.com`"
             >
               <a-input
+                @change="onNameInputChange"
                 v-decorator="[
                   'name',
                   {
@@ -99,11 +100,11 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="tsx">
 import { Vue, Component } from "nuxt-property-decorator";
 import { Mutation, Getter, Action } from "vuex-class";
 
-import registerUser from "@/gql/mutations/registerUser.gql";
+import activate from "@/gql/mutations/activate.gql";
 
 @Component({
   name: 'partner-activate-page',
@@ -126,6 +127,17 @@ export default class PartnerActivatePage extends Vue {
   form: any = {};
   loading: boolean = false;
   isOke: boolean = false;
+  domainHint: string = ''
+
+  onNameInputChange(e) {
+    if (e.inputType === 'insertText') {
+      this.domainHint += e.data
+    }
+
+    if (e.inputType === 'deleteContentBackward') {
+      this.domainHint = this.domainHint.substring(0, this.domainHint.length - 1)
+    }
+  }
 
   created() {
     if (this.isAuth) {
@@ -137,31 +149,39 @@ export default class PartnerActivatePage extends Vue {
 
   onSubmit(e) {
     e.preventDefault();
+    
+    this.form.validateFields(async (err, values) => {
+      if (!err) {
+        this.loading = true;
 
-    // this.form.validateFields(async (err, values) => {
-    //   if (!err) {
-    //     this.loading = true;
+        try {
+          const r = await this.$apollo.mutate({
+            mutation: activate,
+            variables: {
+              activated_code: values.activated_code,
+              email: values.email,
+              screen_name: values.screen_name,
+              name: values.name
+            }
+          });
 
-    //     try {
-    //       const r = await this.$apollo.mutate({
-    //         mutation: registerUser,
-    //         variables: {
-    //           full_name: values.full_name,
-    //           email: values.email,
-    //           phone_number: values.phone_number
-    //         }
-    //       });
+          if (r['data']['activate'] && r['data']['activate']['ok'] === true) {
+            this.$notification.open({
+              message: 'Kích hoạt thành công',
+              description:
+                'Bây giờ bạn có thể đăng nhập vào tiệm.',
+              icon: <a-icon type="smile" style="color: #108ee9" />,
+            })
 
-    //       if (r['data']['register_user'] && r['data']['register_user']['ok'] === true) {
-    //         this.isOke = true
-    //       }
+            this.$router.replace('/partner/login')
+          }
 
-    //       this.loading = false;
-    //     } catch (error) {
-    //       this.loading = false; 
-    //     }
-    //   }
-    // });
+          this.loading = false;
+        } catch (error) {
+          this.loading = false; 
+        }
+      }
+    });
   }
 
   mounted() {

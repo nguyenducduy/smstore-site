@@ -18,6 +18,7 @@
     "noUnusedLocals": false,
     "noImplicitAny": false,
     "resolveJsonModule": true,
+    "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
       "~/*": [

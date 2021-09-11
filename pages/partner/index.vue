@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "nuxt-property-decorator";
-import Breadcrumbs from "@/components/Layout/Partner/Breadcrumbs/index.vue";
+import Breadcrumbs from "@/components/Layout/Breadcrumbs/index.vue";
 
 @Component({
   name: 'partner-dashboard-page',

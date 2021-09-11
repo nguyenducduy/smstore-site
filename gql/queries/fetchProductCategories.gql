@@ -1,0 +1,32 @@
+query fetchProductCategories {
+  categories(
+    where: { parent_id: {_is_null: true} },
+    order_by: { order_no: asc }
+  ) {
+    id
+    parent_id
+    name
+    slug
+    is_active
+    order_no
+    created_at
+    children {
+      id
+      parent_id
+      name
+      slug
+      is_active
+      order_no
+      created_at
+      children {
+        id
+        parent_id
+        name
+        slug
+        is_active
+        order_no
+        created_at
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+mutation activate(
+  $activated_code: String!
+  $email: String!
+  $screen_name: String!
+  $name: String!
+) {
+  activate(
+    activated_code: $activated_code
+    email: $email
+    screen_name: $screen_name
+    name: $name
+  ) {
+    ok
+  }
+}
+

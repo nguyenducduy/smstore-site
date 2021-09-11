@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-sm-12">
           <div :class="$style.copyright">
-            <span class="pr-4">
+            <span class="p-4">
               © 2021 tiemcuatui.com
               <!-- <a
                 href="https://olli-ai.com/"

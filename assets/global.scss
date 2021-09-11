@@ -14,11 +14,9 @@ body {
     display: block;
     z-index: 99;
     height: 60px;
-    padding: 13px 0px 0 23px;
-    border-top: 1px solid #eee;
+    padding: 13px 0px 0 115px;
+    // border-top: 1px solid #eee;
     background-color: #fff;
-    width: 100%;
-    margin-left: 80px;
   }
 
   .ant-modal-header {
@@ -31,12 +29,6 @@ body {
     border-radius: 3px;
     background-color: #f1f8ff;
     padding: 16px;
-  }
-
-  .box-white {
-    border-radius: 3px;
-    background-color: #fff;
-    overflow-x: scroll;
   }
 
   .anticon {
@@ -91,12 +83,6 @@ body {
 
   .ProseMirror {
     min-height: 200px;
-  }
-
-  .content {
-    padding: rem(20);
-    // background-color: #dbe6fd30;
-    min-height: 100%;
   }
 
   .info-label {
@@ -218,4 +204,8 @@ body {
       padding: 0px 10px 0 0;
     }
   }
+}
+
+:global(.ant-table-small) {
+  border: 0 !important;
 }

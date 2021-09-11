@@ -1,0 +1,7 @@
+mutation deleteProductCategory($id: Int!) {
+  delete_categories(
+    where: { id: { _eq: $id } }
+  ) {
+    affected_rows
+  }
+}

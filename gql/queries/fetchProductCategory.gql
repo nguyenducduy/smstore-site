@@ -1,0 +1,9 @@
+query fetchProductCategory($id: Int!) {
+  categories_by_pk(id: $id) {
+    id
+    parent_id
+    name
+    is_active
+    created_at
+  }
+}

@@ -5,16 +5,15 @@
         <div class="flex flex-col p-10 space-y-6 bg-white rounded-lg shadow">
           <h1 class="text-xl font-bold text-center">Đăng nhập tài khoản Partner</h1>
           <a-form class="login-form" :form="form" @submit="onSubmit">
-            <a-form-item label="Tài khoản">
+            <a-form-item label="Email">
               <a-input
-                ref="usernameInput"
                 v-decorator="[
-                  'username',
+                  'email',
                   {
                     rules: [
                       {
                         required: true,
-                        message: 'Vui lòng nhập tài khoản'
+                        message: 'Vui lòng nhập email'
                       }
                     ]
                   }
@@ -28,7 +27,7 @@
               </a-input>
             </a-form-item>
             <a-form-item label="Mật khẩu">
-              <a-input
+              <a-input-password
                 type="password"
                 v-decorator="[
                   'password',
@@ -47,7 +46,7 @@
                   type="lock"
                   style="color: rgba(0,0,0,.25);"
                 />
-              </a-input>
+              </a-input-password>
             </a-form-item>
               <a-button type="link">Quên mật khẩu?</a-button>
               <a-button
@@ -68,7 +67,8 @@
 <script lang="ts">
 import { Vue, Component } from "nuxt-property-decorator";
 import { Mutation, Getter, Action } from "vuex-class";
-// import loginAdmin from "@/apollo/mutations/loginAdmin.gql";
+
+import loginPartner from "@/gql/queries/loginPartner.gql";
 
 @Component({
   name: 'partner-login-page',
@@ -99,41 +99,35 @@ export default class PartnerLoginPage extends Vue {
   onSubmit(e) {
     e.preventDefault();
 
-    // this.form.validateFields(async (err, values) => {
-    //   if (!err) {
-    //     this.loading = true;
+    this.form.validateFields(async (err, values) => {
+      if (!err) {
+        this.loading = true;
 
-    //     try {
-    //       const r = await this.$apollo.mutate({
-    //         mutation: loginAdmin,
-    //         variables: {
-    //           username: values.username,
-    //           password: values.password
-    //         }
-    //       });
+        try {
+          const r = await this.$apollo.mutate({
+            mutation: loginPartner,
+            variables: {
+              email: values.email,
+              password: values.password
+            }
+          });
 
-    //       console.log(r);
-    //       if (r['data']['login_user_admin']['token']) {
-    //         const token = r['data']['login_user_admin']['token'];
-    //         Vue.ls.set('token', token);
-    //         this.$cookiz.set('token', token);
+          console.log(r);
+          if (r['data']['login_partner']['token']) {
+            const token = r['data']['login_partner']['token'];
+            Vue.ls.set('token', token);
+            this.$cookiz.set('token', token);
 
-    //         const redirectUrl: any = this.$route.query.redirect || "/admin";
-    //         return (window.location.href = `${window.location.protocol}//${window.location.hostname
-    //           + (window.location.port ? ":" + window.location.port : "")}${redirectUrl}`);
-    //       }
+            const redirectUrl: any = this.$route.query.redirect || "/partner";
+            return (window.location.href = `${window.location.protocol}//${window.location.hostname
+              + (window.location.port ? ":" + window.location.port : "")}${redirectUrl}`);
+          }
 
-    //       this.loading = false;
-    //     } catch (error) {
-    //       this.loading = false; 
-    //     }
-    //   }
-    // });
-  }
-
-  mounted() {
-    this.$nextTick(() => {
-      this.$refs.usernameInput.focus();
+          this.loading = false;
+        } catch (error) {
+          this.loading = false; 
+        }
+      }
     });
   }
 }

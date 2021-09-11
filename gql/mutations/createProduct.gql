@@ -1,0 +1,10 @@
+mutation createProduct(
+  $name: String!
+) {
+  create_product(
+    name: $name
+  ) {
+    id
+  }
+}
+

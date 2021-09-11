@@ -32,7 +32,6 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    'ant-design-vue/dist/antd.css',
     '@/assets/bootstrap.min.css',
     '@/assets/fonts/font-awesome/css/font-awesome.min.css',
     '@/assets/global.scss'
@@ -40,6 +39,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '@/plugins/antd-ui.js' },
     { src: '@/plugins/helper.js' },
     { src: '@/plugins/event-bus.js' },
     { src: '@/plugins/img-lazyload.js', mode: 'client' },
@@ -47,7 +47,7 @@ export default {
     { src: '@/plugins/webstorage.js', mode: 'client' },
     { src: '@/plugins/axios.js' },
     { src: '@/plugins/zk-table.js', mode: 'client' },
-    { src: '@/plugins/antd-ui.js' },
+    { src: '@/plugins/filepond.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -93,6 +93,7 @@ export default {
     optimizeCSS: true,
     parallel: true,
     babel: {
+      presets: ['@vue/babel-preset-jsx'],
       plugins: [
         ["import", {
           "libraryName": "antd",

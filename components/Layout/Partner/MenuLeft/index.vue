@@ -90,18 +90,13 @@ export default class MenuLeft extends Vue {
         children: [
           {
             id: '2.1',
-            name: 'Tất cả',
+            name: 'Tất cả SP',
             path: '/partner/product'
           },
           {
             id: '2.2',
             name: 'Danh mục',
             path: '/partner/product-category'
-          },
-          {
-            id: '2.3',
-            name: 'Nhóm thuộc tính',
-            path: '/partner/product-group-attribute'
           },
           {
             id: '2.4',

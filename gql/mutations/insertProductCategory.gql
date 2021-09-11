@@ -1,0 +1,9 @@
+mutation insertProductCategory(
+  $object: categories_insert_input!
+) {
+  insert_categories_one(
+    object: $object
+  ) {
+    id
+  }
+}

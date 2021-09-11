@@ -1,0 +1,11 @@
+query loginPartner(
+    $email: String!
+    $password: String!
+) {
+  login_partner(
+    email: $email
+    password: $password
+  ) {
+   token
+  }
+}

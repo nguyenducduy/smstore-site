@@ -1,0 +1,13 @@
+mutation updateFieldProductCategory(
+  $id: Int!
+  $fields: categories_set_input
+) {
+  update_categories(
+    where: {
+      id: { _eq: $id }
+    },
+    _set: $fields
+  ) {
+    affected_rows
+  } 
+}

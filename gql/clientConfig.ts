@@ -21,10 +21,13 @@ export default function({
     console.log(error);
     //fix when a media is deleted.
     if (error['graphQLErrors']) {
-      message.error(
-        error['graphQLErrors'][0]['message'],
-        5
-      );
+      const msg = error.graphQLErrors[0]['message'];
+
+      if (msg.includes(`categories_slug_key`)) {
+        message.error("Danh mục SP này đã tồn tại");            
+      } else {
+        message.error(msg, 5);
+      }
     }
   })
   
@@ -33,7 +36,7 @@ export default function({
   console.info('Connected to GraphQL server at: ', NUXT_ENV_GRAPHQL_URI);
 
   let token = app.$cookiz.get('token');
-  console.log(token);
+  // console.log(token);
   
   return {
     defaultHttpLink: false,

@@ -1,3 +1,5 @@
+const slugify = require('slugify');
+
 const helper = {
   env: {},
 
@@ -32,21 +34,12 @@ const helper = {
     return output;
   },
 
-  getAudio(path) {
-    let output = '';
+  hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+  },
 
-    if (path !== null) {
-      const head = path.substr(0, path.lastIndexOf('/'));    
-      const tail = path.replace(/^.*[\\\/]/, '');
-
-      output = 'https://'
-        + this.env.NUXT_ENV_GCS_URI
-        + this.env.NUXT_ENV_GCS_BUCKET + '/'
-        + head + '/'
-        + tail;
-    }
-    
-    return output;
+  getSlug(title) {
+    return slugify(title, { lower: true, locale: 'vi' })
   }
 }
 

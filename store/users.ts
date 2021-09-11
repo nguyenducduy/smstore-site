@@ -28,6 +28,9 @@ export const state = () => ({
   };
   
   export const getters = {
+    shopId(state) {
+      return +state.loggedUser['https://hasura.io/jwt/claims']['x-hasura-store-id'] || 0
+    },
     isAuth(state) {
       if (typeof state.token === 'undefined' || state.token === null) {
         return false;

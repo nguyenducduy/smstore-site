@@ -1,0 +1,21 @@
+mutation updateProductCategory(
+  $parent_id: Int
+  $id: Int!
+  $name: String!
+  $slug: String
+  $is_active: Boolean!
+) {
+  update_categories(
+    where: {
+      id: { _eq: $id }
+    },
+    _set: {
+      parent_id: $parent_id
+      name: $name
+      slug: $slug
+      is_active: $is_active
+    }
+  ) {
+    affected_rows
+  }
+}

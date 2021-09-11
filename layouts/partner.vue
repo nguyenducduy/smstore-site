@@ -23,7 +23,7 @@
 import { Vue, Component } from 'nuxt-property-decorator'
 import MenuLeft from '@/components/Layout/Partner/MenuLeft/index.vue'
 import Topbar from '@/components/Layout/Partner/Topbar/index.vue'
-import PartnerFooter from '@/components/Layout/Partner/Footer/index.vue'
+import PartnerFooter from '@/components/Layout/Footer/index.vue'
 
 @Component({
   components: {
