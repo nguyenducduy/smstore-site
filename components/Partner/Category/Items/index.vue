@@ -10,7 +10,6 @@
         <a-icon type="caret-up" />
       </a-button>
       <zk-table
-        class="mt-4"
         :data="categories"
         :columns="columns"
         index-text="#"

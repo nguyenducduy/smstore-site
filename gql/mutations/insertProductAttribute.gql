@@ -1,0 +1,10 @@
+mutation insertProductAttribute(
+  $object: attributes_insert_input!
+) {
+  insert_attributes_one(
+    object: $object
+  ) {
+    id
+  }
+}
+

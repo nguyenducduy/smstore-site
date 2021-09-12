@@ -3,7 +3,7 @@
     <div :class="$style.path">
       <template v-for="(item, index) in data">
         <span :key="index" class="text-2xl">
-          <i :class="item.icon" class="mr-2"></i>
+          <!-- <i :class="item.icon" class="mr-2"></i> -->
           <span class="font-weight-normal" v-if="item.active">
             {{ item.title }}
             <span v-if="total > 0 && item.active">({{ total | number('0,0') }})</span>

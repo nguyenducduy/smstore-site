@@ -80,13 +80,13 @@ export default class MenuLeft extends Vue {
         id: '1',
         name: 'Tổng quan',
         path: '/partner',
-        icon: 'fa fa-bar-chart-o'
+        icon: 'fa fa-line-chart'
       },
       {
         id: '2',
         name: 'Sản phẩm',
         path: '/partner/product',
-        icon: 'fa fa-bell-o',
+        icon: 'fa fa-briefcase',
         children: [
           {
             id: '2.1',
@@ -109,7 +109,7 @@ export default class MenuLeft extends Vue {
         id: '3',
         name: 'Blog',
         path: '/partner/blog',
-        icon: 'fa fa-mobile',
+        icon: 'fa fa-book',
         children: [
           {
             id: '3.1',

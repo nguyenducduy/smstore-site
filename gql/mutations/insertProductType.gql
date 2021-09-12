@@ -1,0 +1,10 @@
+mutation insertProductType(
+  $object: types_insert_input!
+) {
+  insert_types_one(
+    object: $object
+  ) {
+    id
+  }
+}
+

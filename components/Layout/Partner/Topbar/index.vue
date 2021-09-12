@@ -1,7 +1,7 @@
 <template>
-  <div class="row" style="background-color: #fff">
+  <div class="row">
     <div class="col-lg-6">
-      <a style="margin-right: 10px; margin-left: 20px;" href="" target="_blank">Go to site <i class="fa fa-arrow-right"></i></a>
+      <!-- <a style="margin-right: 10px; margin-left: 20px;" href="" target="_blank">Go to site <i class="fa fa-arrow-right"></i></a> -->
     </div>
     <div class="col-lg-6">
       <div :class="$style.topbar">

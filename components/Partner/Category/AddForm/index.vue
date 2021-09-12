@@ -7,7 +7,7 @@
       width="25%"
       @close="onClose"
     >
-      <template slot="title">
+      <template slot="title" class="bg-gray-50">
         Thêm danh mục
       </template>
       <div class="row">

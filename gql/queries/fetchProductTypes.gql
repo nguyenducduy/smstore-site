@@ -1,0 +1,11 @@
+query fetchProductTypes {
+  types {
+    id
+    name
+
+    attributes {
+      id
+      name
+    }
+  }
+}

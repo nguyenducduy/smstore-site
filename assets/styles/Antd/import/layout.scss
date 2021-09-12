@@ -6,14 +6,21 @@
 
 .ant-layout {
   min-height: 100vh;
-  background: #F9F9F9;
+  background: #fff;
 }
 
 .ant-layout-header {
   padding: 0;
   height: 50px;
   line-height: 50px;
+  // border-bottom: 1px solid #ddd;
+  background-color: #fff;
 }
+
+.ant-layout-sider-light {
+  border-right: 1px solid #ddd;
+}
+
 
 .ant-layout-footer {
   padding: 0;
@@ -26,4 +33,18 @@
 
 .ant-layout-sider {
   transition: all 0.2s;
+}
+
+.ant-layout-sider-trigger {
+  border-right: 1px solid #ddd;
+}
+
+.ant-table-small {
+  border: 0;
+  .ant-table-content {
+    .ant-table-body {
+      margin: 0;
+    }
+  }
+  
 }

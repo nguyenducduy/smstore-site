@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.footer">
+  <div :class="$style.footer + ' bg-blue-50'">
     <div :class="$style.inner">
       <div class="row">
         <div class="col-sm-12">

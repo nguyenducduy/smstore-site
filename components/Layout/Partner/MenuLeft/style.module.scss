@@ -2,7 +2,6 @@
 
 .logo {
   height: 50px;
-  background: #F9F9F9;
   overflow: hidden;
 }
 
@@ -85,10 +84,9 @@
     }
   }
 
-  :global(.ant-menu-inline),
   :global(.ant-menu-vertical),
   :global(.ant-menu-vertical-left) {
-    border-right: none;
+    border-right: 1px solid #ddd;
   }
 
   :global(.ant-menu-inline-collapsed) {

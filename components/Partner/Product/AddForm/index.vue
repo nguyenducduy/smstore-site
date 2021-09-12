@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 mt-4 bg-white rounded">
+  <div class="mt-8">
     <a-spin :spinning="loading">
       <a-form :form="form" layout="vertical" :colon="false">
         <div class="row">
@@ -25,39 +25,35 @@
                 :instantUpload="false"
               />
             </a-form-item>
-
-            <!-- <a-form-item
-              v-bind="formItemLayout"
-              label="Chủ đề"
-              extra="Có thể chọn nhiều chủ đề"
+            <a-form-item
+              label="Danh mục"
             >
               <a-tree-select
                 v-decorator="[
-                  'categories',
+                  'category_id',
                   {
                     rules: [
                       {
                         required: true,
-                        message: 'Vui lòng chọn chủ đề'
+                        message: 'Vui lòng chọn danh mục'
                       }
                     ]
                   },
                   { initialValue: [] }
                 ]"
-                placeholder="Chọn chủ đề"
-                style="width: 100%"
+                placeholder="Chọn danh mục"
+                style="width: 47%"
                 :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
                 treeDefaultExpandAll
                 :replaceFields="replaceFields"
                 :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
-                :tree-data="category"
+                :tree-data="categories"
                 tree-default-expand-all
                 allow-clear
-                multiple
               ></a-tree-select>
-            </a-form-item> -->
+            </a-form-item>
             <div class="row">
-              <div class="col-lg-8">
+              <div class="col-lg-6">
                 <a-form-item label="Tên SP">
                   <a-input
                     allowClear
@@ -69,11 +65,10 @@
                         ]
                       }
                     ]"
-                    @change="__generateSlug"
                   ></a-input>
                 </a-form-item>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-3">
                 <a-form-item label="SKU">
                   <a-input
                     allowClear
@@ -83,46 +78,55 @@
                   ></a-input>
                 </a-form-item>
               </div>
+              <div class="col-lg-3">
+                <a-form-item label="Giá">
+                  <a-input
+                    allowClear
+                    v-decorator="[
+                      'price',
+                      {
+                        rules: [
+                          { required: true, message: 'Vui lòng nhập giá sản phẩm' }
+                        ]
+                      }
+                    ]"
+                  ></a-input>
+                </a-form-item>
+              </div>
             </div>
+            <medium-editor :content='content' :options='editorOptions' class="p-4 border-2 rounded" />
           </div>
-          <div class="col-lg-6">
+          <div class="col-lg-4">
             <!-- Options info -->
             <a-form-item v-bind="tailFormItemLayout">
               <h1 class="info-label">
                 <span>Tùy chọn</span>
               </h1>
             </a-form-item>
-            <div class="row">
-              <div class="mb-4 col-lg-12">
-                <a-input @keyup.enter="addOption" type="text" v-model="newOptionName" style="width: 30%" placeholder="Tên tùy chọn"></a-input>
+            <div class="mb-10 row">
+              <div class="flex gap-2 mb-4 col-lg-12">
+                <a-input @keyup.enter="addOption" type="text" v-model="newOptionName" placeholder="Tên tùy chọn"></a-input>
                 <a-button type="primary" @click="addOption">Thêm</a-button>
               </div>
               <div class="mt-2 col-lg-12" v-if="options.length > 0">
                 <div v-for="option, i in options" :key="i" class="mb-4 row">
-                  <div class="col-lg-4">
+                  <div class="flex gap-2 mb-4 col-lg-12">
                     <a-input v-model="option.name"></a-input>
-                  </div>
-                  <div class="col-lg-8">
                     <a-button icon="plus" type="dashed" @click="addOptionValue(i)">Thêm giá trị</a-button>
-                    <a-button icon="minus" type="dashed">Xóa</a-button>
+                    <a-button icon="minus" type="dashed" @click="removeOption(i)">Xóa</a-button>
                   </div>
-                  <div class="mt-4 mb-2 col-lg-12" v-for="value, k in option.values" :key="k">
-                    <div class="col-lg-6">
-                      <a-input v-model="value.val"></a-input>
-                    </div>
-                    <div class="col-lg-3">
-                      <a-select v-model="value.mode" placeholder="Tăng/Giảm">
-                        <a-select-option value="inc">
-                          + Tăng
-                        </a-select-option>
-                        <a-select-option value="dec">
-                          - Giảm
-                        </a-select-option>
-                      </a-select>
-                    </div>
-                    <div class="col-lg-3">
-                      <a-input v-model="value.price" suffix="đ"></a-input>
-                    </div>
+                  <div class="flex gap-2 pb-2 bg-gray-50 col-lg-12" v-for="value, k in option.values" :key="k">
+                    <a-input v-model="value.val" @keyup.enter="addOptionValue(i)"></a-input>
+                    <a-select v-model="value.mode" placeholder="Tăng/Giảm">
+                      <a-select-option value="inc">
+                        + Tăng
+                      </a-select-option>
+                      <a-select-option value="dec">
+                        - Giảm
+                      </a-select-option>
+                    </a-select>
+                    <a-input v-model="value.price" suffix="đ"></a-input>
+                    <a-button type="link" icon="minus" @click="removeOptionValue(i, k)"></a-button>
                   </div>
                 </div>
               </div>
@@ -134,19 +138,37 @@
                 <span>Thuộc tính</span>
               </h1>
             </a-form-item>
+            <a-form-item label="Chọn loại SP">
+              <a-select @change="onSelectType">
+                <a-select-option :value="i" v-for="type, i in types" :key="i">
+                  {{ type.name }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+            <div v-if="type_selected_values.length > 0">
+              <template v-for="attr, i in type_selected_values">
+                <a-form-item :key="i" v-bind="formItemLayout" :label="attr['name']">
+                  <a-input type="text" v-decorator="[
+                    `attrs[${attr['id']}]`
+                  ]"></a-input>
+                </a-form-item>
+              </template>
+            </div>
           </div>
-
-          <div class="shadow-lg col-lg-12 save-form-control">
+        </div>
+        <div class="row">
+          <div class="col-lg-12 bg-blue-50 save-form-control">
             <a-form-item>
               <a-button
                 class="mr-4"
                 icon="save"
                 type="primary"
+                size="large"
                 :loading="loading"
                 @click.prevent="onSubmit"
                 >Lưu</a-button
               >
-              <a-button type="danger" class="rs_btn" @click.prevent="form.resetFields()"
+              <a-button size="large" type="danger" class="rs_btn" @click.prevent="form.resetFields()"
                 >Reset</a-button
               >
             </a-form-item>
@@ -159,14 +181,29 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
-const slugify = require('slugify');
+import { Getter } from 'vuex-class'
 
-import createProduct from '@/gql/mutations/createProduct.gql'
+import insertProduct from '@/gql/mutations/insertProduct.gql'
+import fetchProductCategories from '@/gql/queries/fetchProductCategories.gql'
+import fetchProductTypes from '@/gql/queries/fetchProductTypes.gql'
 
 @Component({
-
+  apollo: {
+    categories: {
+      query: fetchProductCategories,
+      prefetch: true
+    },
+    types: {
+      query: fetchProductTypes,
+      prefetch: true
+    }
+  }
 })
 export default class PartnerProductAddForm extends Vue {
+  @Getter('users/shopId') shopId
+
+  categories: any = null
+  types: any = null
   form: any = {};
   loading: boolean = false;
   hasErrors: any = this.$helper.hasErrors;
@@ -183,9 +220,37 @@ export default class PartnerProductAddForm extends Vue {
     pond: HTMLFormElement,
   };
 
+  // attributes
+  type_selected_values : any = []
+  attrs: any = []
+
+  // categories
+  replaceFields: any = {
+    children: "children",
+    title: "name",
+    key: "id",
+    value: "id"
+  };
+  
+  // editor
+  content = ''
+  editorOptions = {
+    autoLink: true,
+    placeholder: {
+      text: 'Nhấn 2 lần để nhập mô tả sản phẩm',
+      hideOnClick: true
+    }
+  }
+
+  // product options
   newOptionName = ''
   options: any = []
   
+  onSelectType(value) {
+    this.attrs = []
+    this.type_selected_values = this.types[value]['attributes']    
+  }
+
   addOption(key) {
     if (this.newOptionName.length === 0) {
       return this.$message.warning('Vui lòng nhập tên tùy chọn')
@@ -199,62 +264,75 @@ export default class PartnerProductAddForm extends Vue {
     this.newOptionName = ''
   }
 
-  addOptionValue(key) {
-    console.log(key);
-    
+  removeOption(key) {
+    this.options.splice(key, 1)
+  }
+
+  addOptionValue(key) {    
     this.options[key]['values'].push({
-      'val': '1231232',
+      'val': '',
       'mode': '',
       'price': ''
     })
+  }
 
-    console.log(this.options);
-    
+  removeOptionValue(keyOption, keyValue) {
+    this.options[keyOption]['values'].splice(keyValue, 1)
   }
   
   
   async onSubmit(e) {
     e.preventDefault();
-    await this.$refs.pond.processFiles();
     
-    // this.form.validateFields(async (err, values) => {
-    //   if (!err) {
-    //     this.loading = true;
+    this.form.validateFields(async (err, values) => {
+      console.log(values);
+      return 
+      if (!err) {
+        this.options.map(option => {
+          if (option['values'].length > 0) {
+            option['values'].map(value => {
+              if (value['val'].length === 0) {
+                return this.$message.warning(`Vui lòng nhập giá trị cho tùy chọn ${option['name']}`)
+              }
+            })
+          } else {
+            return this.$message.warning(`Vui lòng nhập giá trị cho tùy chọn ${option['name']}`)
+          }
+        })
+
+        this.loading = true;
+
+        // await this.$refs.pond.processFiles();
         
-    //     try {
-    //       let productItem = {
-    //         name: values.name,
-    //       };
+        try {  
+          await this.$apollo.mutate({
+            mutation: insertProduct,
+            variables: {
+              object: {
+                store_id: this.shopId,
+                name: values.name,
+                slug: `${this.$helper.getSlug(values.name)}-${this.shopId}`,
+                options: this.options,
+                description: this.content,
+                category_id: values.category_id
+              }
+            }
+          });
 
-          
-    //       await this.$apollo.mutate({
-    //         mutation: createProduct,
-    //         variables: productItem
-    //       });
-
-    //       this.loading = false;
-    //       this.form.resetFields();
-    //       this.$message.success(`Sản phẩm "${values.name}" đã được thêm`);
-    //     } catch (error) {
-    //       this.loading = false;
-    //     }
-    //   }
-    // });
+          this.loading = false;
+          this.form.resetFields();
+          this.options = []
+          this.content = ''
+          this.$message.success(`Sản phẩm "${values.name}" đã được thêm`);
+        } catch (error) {
+          this.loading = false;
+        }
+      }
+    });
   }
 
   created() {
-    this.form = this.$form.createForm(this);
-    
-  }
-
-  mounted() {
-    
-  }
-
-  __generateSlug(e) {
-    this.form.setFieldsValue({
-      slug: slugify(e.target.value, { lower: true, locale: 'vi' })
-    })
+    this.form = this.$form.createForm(this); 
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <div class="p-6 content">
-    <div class="mb-4 row">
+  <div class="p-8 content">
+    <div class="mb-8 row">
       <div class="col-lg-6">
         <breadcrumbs :data="bc" />
       </div>
@@ -36,15 +36,14 @@ export default class PartnerProductCategoryPage extends Vue {
   
   bc: any = [
     {
-      title: "Danh mục SP",
-      url: "/partner/product-category",
+      title: "Sản phẩm",
+      url: "/partner/product",
       active: false,
-      icon: 'fa fa-tags'
     },
     {
-      title: "Tất cả",
-      url: "",
-      active: true
+      title: "Danh mục",
+      url: "/partner/product-category",
+      active: true,
     }
   ];
 }

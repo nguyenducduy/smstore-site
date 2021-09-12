@@ -34,6 +34,8 @@ export default {
   css: [
     '@/assets/bootstrap.min.css',
     '@/assets/fonts/font-awesome/css/font-awesome.min.css',
+    'medium-editor/dist/css/medium-editor.css',
+    'vuejs-medium-editor/src/themes/default.css',
     '@/assets/global.scss'
   ],
 
@@ -48,6 +50,7 @@ export default {
     { src: '@/plugins/axios.js' },
     { src: '@/plugins/zk-table.js', mode: 'client' },
     { src: '@/plugins/filepond.js', mode: 'client' },
+    { src: '@/plugins/medium-editor.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
