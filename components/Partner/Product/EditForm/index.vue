@@ -187,9 +187,19 @@
                 @click.prevent="onSubmit"
                 >Lưu</a-button
               >
-              <a-button size="large" type="danger" class="rs_btn" @click.prevent="form.resetFields()"
-                >Reset</a-button
-              >
+              <a-button
+                class="mr-4"
+                size="large"
+                type="dashed"
+                @click.prevent="form.resetFields()">
+                Reset
+              </a-button>
+              <a-button
+                size="large"
+                type="danger"
+                 @click.prevent="form.resetFields()">
+                Xóa
+              </a-button>
             </a-form-item>
           </div>
         </div>
@@ -202,9 +212,10 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { Getter } from 'vuex-class'
 
-import insertProduct from '@/gql/mutations/insertProduct.gql'
+import updateProduct from '@/gql/mutations/updateProduct.gql'
 import fetchProductCategories from '@/gql/queries/fetchProductCategories.gql'
 import fetchProductTypes from '@/gql/queries/fetchProductTypes.gql'
+import fetchProduct from '@/gql/queries/fetchProduct.gql'
 
 @Component({
   apollo: {
@@ -218,9 +229,10 @@ import fetchProductTypes from '@/gql/queries/fetchProductTypes.gql'
     }
   }
 })
-export default class PartnerProductAddForm extends Vue {
+export default class PartnerProductEditForm extends Vue {
   @Getter('users/shopId') shopId
 
+  product: any = null
   categories: any = null
   types: any = null
   form: any = {};
@@ -330,7 +342,6 @@ export default class PartnerProductAddForm extends Vue {
           let productItem = {
             store_id: this.shopId,
             name: values.name,
-            slug: `${this.$helper.getSlug(values.name)}-${this.shopId}`,
             options: this.options,
             description: this.description,
             category_id: values.category_id,
@@ -340,14 +351,12 @@ export default class PartnerProductAddForm extends Vue {
             type_id: this.types[this.type_selected]['id']
           }
 
+          let attrs = []
           if (values.attrs.length > 0) {
-            productItem['product_attributes'] = {
-              data: []
-            }
-
             values.attrs.map((attr_value, attr_id) => {
-              productItem['product_attributes']['data'].push({
+              attrs.push({
                 attribute_id: attr_id,
+                product_id: this.product.id,
                 store_id: this.shopId,
                 value: typeof attr_value !== 'undefined' ? attr_value : ''
               })
@@ -355,17 +364,17 @@ export default class PartnerProductAddForm extends Vue {
           }
 
           await this.$apollo.mutate({
-            mutation: insertProduct,
+            mutation: updateProduct,
             variables: {
-              object: productItem
+              id: this.product.id,
+              product: productItem,
+              attributes: attrs
             }
           });
 
           this.loading = false;
-          this.form.resetFields()
-          this.description = ''
           
-          this.$message.success(`Sản phẩm "${values.name}" đã được thêm`)
+          this.$message.success(`Cập nhật sản phẩm "${values.name}" thành công`)
         } catch (error) {
           this.loading = false;
         }
@@ -375,6 +384,56 @@ export default class PartnerProductAddForm extends Vue {
 
   created() {
     this.form = this.$form.createForm(this); 
+  }
+
+  async mounted() {
+    const r = await this.$apollo.query({
+      query: fetchProduct,
+      variables: { id: this.$route.params.id }
+    })
+
+    if (r.data) {
+      const product = r.data.products_by_pk
+      this.product = product
+
+      this.type_selected = this.types.filter(x => x.id === product.type_id)
+      const typeIndex = this.types.findIndex(x => x.id === product.type_id)
+      this.type_selected = typeIndex
+      this.type_selected_values = this.types[typeIndex]['attributes']
+
+      this.form = this.$form.createForm(this, {
+        mapPropsToFields: () => {
+          return {
+            category_id: this.$form.createFormField({
+              value: product.category_id
+            }),
+            name: this.$form.createFormField({
+              value: product.name
+            }),
+            price: this.$form.createFormField({
+              value: product.price
+            }),
+            attrs: this.$form.createFormField({
+              value: []
+            }),
+          };
+        }
+      });
+
+      this.options = product.options
+    }
+
+    const self = this
+    this.$nextTick(() => {
+      let attrs = []
+      self.product.product_attributes.map(item => {
+        attrs[item.attribute.id] = item.value        
+      })
+      
+      self.form.setFieldsValue({
+        attrs: attrs
+      })
+    })
   }
 }
 </script>

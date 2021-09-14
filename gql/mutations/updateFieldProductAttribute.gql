@@ -1,0 +1,13 @@
+mutation updateFieldProductAttribute(
+  $id: Int!
+  $fields: attributes_set_input
+) {
+  update_attributes(
+    where: {
+      id: { _eq: $id }
+    },
+    _set: $fields
+  ) {
+    affected_rows
+  } 
+}

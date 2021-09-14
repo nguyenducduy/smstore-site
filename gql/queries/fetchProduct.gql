@@ -1,0 +1,22 @@
+query fetchProduct($id: Int!) {
+  products_by_pk(id: $id) {
+    id
+    category_id
+    name
+    description
+    sku
+    price
+    is_active
+    in_stock
+    options
+    product_attributes {
+      id
+      value
+      attribute {
+        id
+        name
+      }
+    }
+    type_id
+  }
+}

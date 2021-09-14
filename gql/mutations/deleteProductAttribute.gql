@@ -1,0 +1,7 @@
+mutation deleteProductAttribute($id: Int!) {
+  delete_attributes(
+    where: { id: { _eq: $id } }
+  ) {
+    affected_rows
+  }
+}

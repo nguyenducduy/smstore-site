@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-lg-12" v-if="types">
+    <div class="col-lg-6" v-if="types">
       <a-tabs :default-active-key="types[0]['id']" @change="onChangeTabType">
         <a-tab-pane :tab="type.name" v-for="type in types" :key="type.id">
           <div class="flex justify-between mb-4">
@@ -19,27 +19,30 @@
               onChange: onSelectChange
             }"  
           >
+            <template slot="_orderNo" slot-scope="record">
+              <partner-attribute-editable-order-no :id="record.id" :text="record.order_no" size="small" width="50" />
+            </template>
             <template slot="_actions" slot-scope="record">
               <!-- <a-button
                 type="link"
                 icon="edit"
                 @click="$bus.$emit('user.edit.show', record.id)"
-              >Sửa</a-button>
-              <user-delete-button :id="record.id" /> -->
+              >Sửa</a-button> -->
+              <partner-attribute-delete-button :id="record.id" />
             </template>
           </a-table>
         </a-tab-pane>
       </a-tabs> 
     </div>
-    <!-- <user-edit-form /> -->
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "nuxt-property-decorator";
+import { Vue, Component, Watch } from "nuxt-property-decorator"
 // import { getOrderBy, getFilterBy, initQs, createUrl } from "@/helper/index";
 // import UserEditForm from "@/components/Admin/User/EditForm/index.vue";
-// import UserDeleteButton from "@/components/Admin/User/DeleteButton/index.vue";
+import PartnerAttributeDeleteButton from "@/components/Partner/Attribute/DeleteButton/index.vue"
+import PartnerAttributeEditableOrderNo from "@/components/Partner/Attribute/EditableOrderNo/index.vue"
 // import Bulk from "@/components/Admin/User/Bulk/index.vue";
 // import UserFilterForm from "@/components/Admin/User/FilterForm/index.vue";
 
@@ -47,12 +50,13 @@ import fetchProductTypes from "@/gql/queries/fetchProductTypes.gql";
 // import countUsers from "@/apollo/queries/countUsers.gql";
 
 @Component({
-  // components: {
-  //   UserEditForm,
-  //   UserDeleteButton,
-  //   Bulk,
-  //   UserFilterForm
-  // },
+  components: {
+    // UserEditForm,
+    PartnerAttributeDeleteButton,
+    PartnerAttributeEditableOrderNo
+    // Bulk,
+    // UserFilterForm
+  },
   apollo: {
     types: {
       prefetch: true,
@@ -61,15 +65,8 @@ import fetchProductTypes from "@/gql/queries/fetchProductTypes.gql";
   }
 })
 export default class PartnerProductAttributeItems extends Vue {
-  // @Watch('users_aggregate')
-  // onUserAggregateChange() {
-  //   this.$bus.$emit('bc.total', this.users_aggregate.aggregate.count); 
-  // }
-
   types: any = null;
-  users: any = null;
-  users_aggregate: any = null;
-
+ 
   // items per page
   pageSize: number = 30;
   currentPage: number = 1;
@@ -94,14 +91,6 @@ export default class PartnerProductAttributeItems extends Vue {
     { action: "block", label: "Khóa" },
   ];
 
-  get total() {
-    if (this.users_aggregate) {
-      return this.users_aggregate.aggregate.count;
-    } else {
-      return 0;
-    }
-  }
-
   get hasSelected() {
     return this.selectedRowKeys.length > 0;
   }
@@ -118,7 +107,6 @@ export default class PartnerProductAttributeItems extends Vue {
         key: "id", // sort with field in model
         sorter: true,
         sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order,
-        width: '100px'
       },
       {
         title: "Tên TT",
@@ -126,6 +114,14 @@ export default class PartnerProductAttributeItems extends Vue {
         key: "name", // sort with field in model
         sorter: true,
         sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
+      },
+      {
+        title: "TTHT",
+        key: "order_no", // sort with field in model
+        sorter: true,
+        sortOrder: sortedInfo.columnKey === "order_no" && sortedInfo.order,
+        scopedSlots: { customRender: "_orderNo" },
+        align: "center",
       },
       {
         align: "right",

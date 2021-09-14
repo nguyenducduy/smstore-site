@@ -6,6 +6,7 @@ query fetchProductTypes {
     attributes {
       id
       name
+      order_no
     }
   }
 }

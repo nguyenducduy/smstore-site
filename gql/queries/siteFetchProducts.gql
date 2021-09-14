@@ -1,0 +1,14 @@
+query siteFetchProducts {
+  products {
+    id
+    name
+    product_attributes {
+      id
+      value
+      attribute {
+        id
+        name
+      }
+    }
+  }
+}

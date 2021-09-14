@@ -90,22 +90,22 @@ export default class PartnerProductAttributeAddModal extends Vue {
   onSubmit() {
     this.form.validateFields(async (err, values) => {
       if (!err) {
-        console.log(values);
-        
         this.loading = true;
 
         try {
           values.attrs.map(async attr => {
-            await this.$apollo.mutate({
-              mutation: insertProductAttribute,
-              variables: {
-                object: {
-                  name: attr.value,
-                  store_id: this.shopId,
-                  type_id: this.typeId
+            if (attr.value !== '') {
+              await this.$apollo.mutate({
+                mutation: insertProductAttribute,
+                variables: {
+                  object: {
+                    name: attr.value,
+                    store_id: this.shopId,
+                    type_id: this.typeId
+                  }
                 }
-              }
-            });
+              });
+            }
           })          
 
           this.form.resetFields();
@@ -113,7 +113,7 @@ export default class PartnerProductAttributeAddModal extends Vue {
           this.visible = false;
 
           this.$message.success(`Thuộc tính đã được thêm`);
-          this.$bus.$emit('attributes.reload');
+          this.$bus.$emit('types.reload');
         } catch (error) {
           this.loading = false;
         }
