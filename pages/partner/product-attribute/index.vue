@@ -42,10 +42,13 @@ export default class PartnerProductAttributePage extends Vue {
       title: "Sản phẩm",
       url: "/partner/product",
       active: false,
+      sub: [
+        { icon: 'plus', name: 'Thêm', url: '/partner/product/add' }
+      ]
     },
     {
       title: "Thuộc tính & loại SP",
-      url: "/partner/product-atribute",
+      url: "",
       active: true,
     },
   ];

@@ -8,6 +8,8 @@ export default {
     NUXT_ENV_GRAPHQL_URI: process.env.NUXT_ENV_GRAPHQL_URI,
     NUXT_ENV_GRAPHQLWS_URI: process.env.NUXT_ENV_GRAPHQLWS_URI,
     NUXT_ENV_GUEST_TOKEN: process.env.NUXT_ENV_GUEST_TOKEN,
+    NUXT_ENV_STORAGE_ENDPOINT: process.env.NUXT_ENV_STORAGE_ENDPOINT,
+    NUXT_ENV_S3_ENDPOINT: process.env.NUXT_ENV_S3_ENDPOINT
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head

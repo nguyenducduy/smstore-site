@@ -1,0 +1,11 @@
+query countProducts(
+  $where: products_bool_exp
+) {
+  products_aggregate(
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

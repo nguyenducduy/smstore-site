@@ -1,20 +1,24 @@
 <template>
-  <div :class="$style.breadcrumbs">
-    <div :class="$style.path">
-      <template v-for="(item, index) in data">
-        <span :key="index" class="text-2xl">
-          <!-- <i :class="item.icon" class="mr-2"></i> -->
-          <span class="font-weight-normal" v-if="item.active">
-            {{ item.title }}
-            <span v-if="total > 0 && item.active">({{ total | number('0,0') }})</span>
-          </span>
-          <span v-else>
-            <router-link :to="item.url">{{ item.title }}</router-link>
-          </span>
-          <span v-if="!item.active" :class="$style.arrow"></span>
+  <div>
+    <a-breadcrumb>
+      <a-breadcrumb-item v-for="(item, i) in data" :key="i" class="text-xl">
+        <nuxt-link :to="item.url" v-if="item.active === false">
+          <i :class="item.icon" class="mr-2"></i> {{ item.title }}
+        </nuxt-link>
+        <span v-else>
+          {{ item.title }}
+          <span v-if="total > 0 && item.active">({{ total | number('0,0') }})</span>
         </span>
-      </template>
-    </div>
+        <a-menu slot="overlay" v-if="item.sub">
+          <a-menu-item v-for="(x,i) in item.sub" :key="i" class="text-center">
+            <nuxt-link :to="x.url">
+              <a-icon :type="x.icon" />
+              {{ x.name }}
+            </nuxt-link>
+          </a-menu-item>
+        </a-menu>
+      </a-breadcrumb-item>      
+    </a-breadcrumb>
   </div>
 </template>
 

@@ -5,7 +5,7 @@
     </div>
     <div class="col-lg-6">
       <div :class="$style.topbar">
-        <!-- <profile-menu /> -->
+        <profile-menu class="mr-8" />
       </div>
     </div>
   </div>
@@ -13,12 +13,12 @@
 
 <script lang="ts">
 import { Vue, Component } from "nuxt-property-decorator";
-// import ProfileMenu from "@/components/Layout/Partner/Topbar/ProfileMenu/index.vue";
+import ProfileMenu from "@/components/Layout/Partner/Topbar/ProfileMenu/index.vue";
 
 @Component({
   name: "topbar",
   components: {
-    // ProfileMenu,
+    ProfileMenu,
   }
 })
 export default class Topbar extends Vue {}

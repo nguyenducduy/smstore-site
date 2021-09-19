@@ -1,11 +1,14 @@
 <template>
-  <div class="p-8 pt-12 content">
+  <div class="p-8 pt-6 content">
     <div class="mb-8 row">
-      <div class="col-lg-12">
+      <div class="col-lg-6">
         <breadcrumbs :data="bc" />
       </div>
+      <div class="text-right col-lg-6">
+        <a-button type="primary" icon="plus" @click="$router.push('/partner/product/add')">Thêm</a-button>
+      </div>
       <div class="col-lg-12">
-        <partner-product-add-form />
+        <partner-product-items />
       </div>
     </div>
   </div>
@@ -14,17 +17,17 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import Breadcrumbs from "@/components/Layout/Breadcrumbs/index.vue";
-import PartnerProductAddForm from "@/components/Partner/Product/AddForm/index.vue";
+import PartnerProductItems from "@/components/Partner/Product/Items/index.vue";
 
 @Component({
   layout: "partner",
   middleware: ['partner-check-auth'],
   components: {
     Breadcrumbs,
-    PartnerProductAddForm
+    PartnerProductItems
   }
 })
-export default class PartnerProductAddPage extends Vue {
+export default class PartnerProductPage extends Vue {
   head() {    
     return {
       title: this.bc.map(ele => { return ele.title }).join(' » ')
@@ -35,10 +38,10 @@ export default class PartnerProductAddPage extends Vue {
     {
       title: "Sản phẩm",
       url: "/partner/product",
-      active: false,
+      active: false
     },
     {
-      title: "Thêm",
+      title: "Tất cả",
       url: "",
       active: true
     }

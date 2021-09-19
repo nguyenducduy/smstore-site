@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8">
+  <div class="mt-8" v-if="product">
     <a-spin :spinning="loading">
       <a-form :form="form" layout="vertical" :colon="false">
         <div class="row">
@@ -12,7 +12,19 @@
             </a-form-item>
             <a-form-item
             >
+              <section class="grid grid-cols-1 gap-4 my-5 md:grid-cols-4" v-if="myFiles.length > 0">
+                <template v-for="(image, i) in myFiles">
+                  <div :key="i">
+                     <a class="hover:opacity-75 " target="_blank">
+                        <img class="object-cover w-full h-64" :src="$helper.getImage(image.path)"/>
+                      </a>
+                    <a-button icon="delete" type="danger" class="mt-2" @click="onRemoveImage(i)" />
+                  </div>
+                </template>
+              </section>
+
               <file-pond
+                v-show="myFiles.length < 4"
                 ref="pond"
                 name="file"
                 accepted-file-types="image/jpeg, image/png"
@@ -20,8 +32,7 @@
                 allowFileEncode="true"
                 allowFileMetadata="true"
                 allowMultiple="true"
-                maxFiles="4"
-                :files="myFiles"
+                :maxFiles="4 - myFiles.length"
                 :instantUpload="false"
               />
             </a-form-item>
@@ -178,6 +189,22 @@
         <div class="row">
           <div class="col-lg-12 bg-blue-50 save-form-control">
             <a-form-item>
+              <a-progress
+                v-show="loading"
+                type="circle"
+                :percent="percent"
+                :width="40"
+                :stroke-color="{
+                  '0%': '#108ee9',
+                  '100%': '#87d068',
+                }"
+              />
+              <a-button
+                class="ml-4 mr-4"
+                size="large"
+                @click.prevent="form.resetFields()">
+                Clear
+              </a-button>
               <a-button
                 class="mr-4"
                 icon="save"
@@ -187,13 +214,6 @@
                 @click.prevent="onSubmit"
                 >Lưu</a-button
               >
-              <a-button
-                class="mr-4"
-                size="large"
-                type="dashed"
-                @click.prevent="form.resetFields()">
-                Reset
-              </a-button>
               <a-button
                 size="large"
                 type="danger"
@@ -246,7 +266,9 @@ export default class PartnerProductEditForm extends Vue {
     wrapperCol: { span: 24 }
   };
 
-  myFiles: any = null;
+  // upload
+  myFiles: any = []
+  percent: number = 0
   $refs: {
     pond: HTMLFormElement,
   };
@@ -277,6 +299,10 @@ export default class PartnerProductEditForm extends Vue {
   // product options
   newOptionName: string = ''
   options: any = []
+
+  onRemoveImage(index) {
+    this.myFiles.splice(index, 1)
+  }
   
   onSelectType(value) {
     this.attrs = []
@@ -421,6 +447,12 @@ export default class PartnerProductEditForm extends Vue {
       });
 
       this.options = product.options
+
+      if (product.images.length > 0) {
+        product.images.map(image => {
+          this.myFiles.push(image)
+        })
+      }
     }
 
     const self = this
@@ -440,7 +472,7 @@ export default class PartnerProductEditForm extends Vue {
 
 <style lang="scss">
 .filepond--item {
-    width: calc(50% - 0.5em);
+    width: calc(25% - 0.5em);
 }
 .ant-card-grid {
   box-shadow: none !important;

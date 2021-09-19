@@ -24,8 +24,11 @@ export default function({
       const msg = error.graphQLErrors[0]['message'];
 
       if (msg.includes(`categories_slug_key`)) {
-        message.error("Danh mục SP này đã tồn tại");            
-      } else {
+        message.error("Danh mục SP này đã tồn tại.");            
+      } else if (msg.includes(`products_type_id_fkey`)) {
+        message.error("Không thể xóa loại vì có sản phẩm đang sử dụng loại này.")
+      }
+      else {
         message.error(msg, 5);
       }
     }

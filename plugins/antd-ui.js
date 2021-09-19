@@ -37,9 +37,13 @@ import {
   Collapse,
   Card,
   Timeline,
-  Alert
+  Alert,
+  Progress,
+  Popover
 } from "ant-design-vue";
 
+Vue.use(Popover);
+Vue.use(Progress);
 Vue.use(Alert);
 Vue.use(DatePicker);
 Vue.use(Modal);

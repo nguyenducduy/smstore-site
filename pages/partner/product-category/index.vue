@@ -39,10 +39,13 @@ export default class PartnerProductCategoryPage extends Vue {
       title: "Sản phẩm",
       url: "/partner/product",
       active: false,
+      sub: [
+        { icon: 'plus', name: 'Thêm', url: '/partner/product/add' }
+      ]
     },
     {
       title: "Danh mục",
-      url: "/partner/product-category",
+      url: "",
       active: true,
     }
   ];

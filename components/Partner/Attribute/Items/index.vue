@@ -1,11 +1,11 @@
 <template>
   <div class="row">
-    <div class="col-lg-6" v-if="types">
+    <div class="col-lg-6" v-if="types && types.length > 0">
       <a-tabs :default-active-key="types[0]['id']" @change="onChangeTabType">
         <a-tab-pane :tab="type.name" v-for="type in types" :key="type.id">
           <div class="flex justify-between mb-4">
             <a-button  icon="plus" @click="$bus.$emit('attributes.add.show', type.id, type.name)">Thêm thuộc tính</a-button>
-            <a-button type="danger" icon="delete" @click="$bus.$emit('attributes.add.show', type.id, type.name)">Xóa</a-button>
+            <partner-type-delete-button :id="type.id" />
           </div>
           
           <a-table
@@ -19,6 +19,9 @@
               onChange: onSelectChange
             }"  
           >
+            <template slot="_name" slot-scope="record">
+              <partner-attribute-editable-name :id="record.id" :text="record.name" size="small" width="70%" />
+            </template>
             <template slot="_orderNo" slot-scope="record">
               <partner-attribute-editable-order-no :id="record.id" :text="record.order_no" size="small" width="50" />
             </template>
@@ -43,6 +46,8 @@ import { Vue, Component, Watch } from "nuxt-property-decorator"
 // import UserEditForm from "@/components/Admin/User/EditForm/index.vue";
 import PartnerAttributeDeleteButton from "@/components/Partner/Attribute/DeleteButton/index.vue"
 import PartnerAttributeEditableOrderNo from "@/components/Partner/Attribute/EditableOrderNo/index.vue"
+import PartnerAttributeEditableName from "@/components/Partner/Attribute/EditableName/index.vue"
+import PartnerTypeDeleteButton from "@/components/Partner/Type/DeleteButton/index.vue"
 // import Bulk from "@/components/Admin/User/Bulk/index.vue";
 // import UserFilterForm from "@/components/Admin/User/FilterForm/index.vue";
 
@@ -53,7 +58,9 @@ import fetchProductTypes from "@/gql/queries/fetchProductTypes.gql";
   components: {
     // UserEditForm,
     PartnerAttributeDeleteButton,
-    PartnerAttributeEditableOrderNo
+    PartnerAttributeEditableOrderNo,
+    PartnerTypeDeleteButton,
+    PartnerAttributeEditableName
     // Bulk,
     // UserFilterForm
   },
@@ -110,10 +117,10 @@ export default class PartnerProductAttributeItems extends Vue {
       },
       {
         title: "Tên TT",
-        dataIndex: "name",
         key: "name", // sort with field in model
         sorter: true,
         sortOrder: sortedInfo.columnKey === "name" && sortedInfo.order,
+        scopedSlots: { customRender: "_name" }
       },
       {
         title: "TTHT",

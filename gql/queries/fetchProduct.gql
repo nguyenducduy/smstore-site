@@ -17,6 +17,10 @@ query fetchProduct($id: Int!) {
         name
       }
     }
+    images {
+      id
+      path
+    }
     type_id
   }
 }

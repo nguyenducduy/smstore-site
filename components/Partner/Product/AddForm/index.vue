@@ -21,7 +21,6 @@
                 allowFileMetadata="true"
                 allowMultiple="true"
                 maxFiles="4"
-                :files="myFiles"
                 :instantUpload="false"
               />
             </a-form-item>
@@ -178,17 +177,27 @@
         <div class="row">
           <div class="col-lg-12 bg-blue-50 save-form-control">
             <a-form-item>
+              <a-progress
+                v-show="loading"
+                type="circle"
+                :percent="percent"
+                :width="40"
+                :stroke-color="{
+                  '0%': '#108ee9',
+                  '100%': '#87d068',
+                }"
+              />
+              <a-button class="ml-4" size="large" @click.prevent="form.resetFields()"
+                >Clear</a-button
+              >
               <a-button
-                class="mr-4"
+                class="ml-4"
                 icon="save"
                 type="primary"
                 size="large"
                 :loading="loading"
                 @click.prevent="onSubmit"
                 >Lưu</a-button
-              >
-              <a-button size="large" type="danger" class="rs_btn" @click.prevent="form.resetFields()"
-                >Reset</a-button
               >
             </a-form-item>
           </div>
@@ -234,7 +243,8 @@ export default class PartnerProductAddForm extends Vue {
     wrapperCol: { span: 24 }
   };
 
-  myFiles: any = null;
+  // upload
+  percent: number = 0
   $refs: {
     pond: HTMLFormElement,
   };
@@ -299,12 +309,13 @@ export default class PartnerProductAddForm extends Vue {
   removeOptionValue(keyOption, keyValue) {
     this.options[keyOption]['values'].splice(keyValue, 1)
   }
-  
+
   async onSubmit(e) {
     e.preventDefault();
     
-    
     this.form.validateFields(async (err, values) => {
+      this.loading = true
+      
       console.log(values);
       console.log(this.options);
       console.log(this.description);
@@ -323,8 +334,6 @@ export default class PartnerProductAddForm extends Vue {
         })
 
         this.loading = true;
-
-        // await this.$refs.pond.processFiles();
         
         try {  
           let productItem = {
@@ -354,6 +363,43 @@ export default class PartnerProductAddForm extends Vue {
             })
           }
 
+          // upload files
+          const files = await this.$refs.pond.getFiles()
+          let formData = new FormData();
+          if (files.length > 0) {
+            files.map((filepondObject, i) => {
+              formData.append(`files[${i}]`, filepondObject.file)
+            })
+
+            // upload
+            const config = {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              },
+              onUploadProgress: e => {
+                const uploadPercentage: number = Math.round((e.loaded * 100) / e.total);
+                this.percent = uploadPercentage
+              }
+            }
+            const response = await this.$axios.post(
+              `${this.$config.NUXT_ENV_STORAGE_ENDPOINT}/products/upload`,
+              formData,
+              config
+            )
+
+            if (response.data) {
+              productItem['images'] = {}
+              productItem['images']['data'] = []
+
+              response.data.map(path => {  
+                productItem['images']['data'].push({
+                  store_id: this.shopId,
+                  path: path
+                })
+              })
+            }
+          }
+
           await this.$apollo.mutate({
             mutation: insertProduct,
             variables: {
@@ -381,7 +427,7 @@ export default class PartnerProductAddForm extends Vue {
 
 <style lang="scss">
 .filepond--item {
-    width: calc(50% - 0.5em);
+    width: calc(25% - 0.5em);
 }
 .ant-card-grid {
   box-shadow: none !important;

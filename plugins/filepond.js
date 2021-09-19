@@ -12,18 +12,7 @@ const FilePond = vueFilePond(
 
 setOptions({
   labelIdle: `Kéo thả hình hoặc <span class="filepond--label-action">Chọn</span>`,
-  imagePreviewHeight: 150,
-  server: {
-    url: 'http://localhost:7000',
-    process: {
-      url: '/process',
-      method: 'POST',
-      withCredentials: false,
-      onerror: (response) => {
-        console.log(response);
-      }
-    }
-  }
+  imagePreviewHeight: 100,
 });
 
 

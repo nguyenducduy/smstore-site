@@ -1,0 +1,11 @@
+query fetchUser($id: Int!) {
+  users_by_pk(
+    id: $id
+  ) {
+    id
+    full_name
+    email
+    phone_number
+    activated_code
+  }
+}

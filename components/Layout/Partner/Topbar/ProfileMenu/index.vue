@@ -1,21 +1,13 @@
 <template>
   <a-dropdown :trigger="['click']" placement="bottomLeft" v-if="userInfo">
     <div :class="$style.dropdown">
-      Hi, <strong>{{ userInfo.name }}</strong>
+      Hi, <strong>{{ userInfo.full_name }}</strong>
       &nbsp;
       <!-- <a-badge :count="99"> -->
-      <a-avatar v-if="userInfo.avatar !== null" :src="__getAvatar(userInfo.avatar)" />
-      <a-avatar v-else :style="`backgroundColor: ${ userInfo.group.color} ; color: #fff`">{{ userInfo.name[0] }}</a-avatar>
+      <a-avatar style="color: #f56a00; backgroundColor: #fde3cf">{{ userInfo.full_name[0] }}</a-avatar>
       <!-- </a-badge> -->
     </div>
     <a-menu slot="overlay">
-      <a-menu-item>
-        <p class="mt-1">
-          <a-tag :color="userInfo.group.color">{{
-            userInfo.group.description
-          }}</a-tag>
-        </p>
-      </a-menu-item>
       <a-menu-item>
         <a
           href="javascript: void(0);"
@@ -39,7 +31,7 @@
 import { Vue, Component } from "nuxt-property-decorator";
 import { Getter } from "vuex-class";
 
-import fetchUser from "@/apollo/queries/fetchUser.gql";
+import fetchUser from "@/gql/queries/fetchUser.gql";
 
 @Component({
   name: "profile-menu"
@@ -60,8 +52,6 @@ export default class ProfileMenu extends Vue {
       return (window.location.href = `
           ${window.location.protocol}//${window.location.hostname +
         (window.location.port ? ":" + window.location.port : "")}/admin`);
-
-      this.$nuxt.$loading.finish();
     } catch (error) {
       this.$nuxt.$loading.finish();
     }
@@ -77,14 +67,6 @@ export default class ProfileMenu extends Vue {
       this.userInfo = r['data']['users_by_pk'];
     } catch (error) {
       
-    }
-  }
-
-  __getAvatar(originCoverUrl) {
-    if (originCoverUrl !== '') {
-      return this.$helper.getAvatar(originCoverUrl);
-    } else {
-      return null;
     }
   }
 }
