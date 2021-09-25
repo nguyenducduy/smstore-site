@@ -2,16 +2,24 @@ mutation updateProduct(
   $id: Int!
   $product: products_set_input
   $attributes: [product_attribute_insert_input!]!
+  $images: [images_insert_input!]!
 ) {
   delete_product_attribute(
-      where: {product_id: {_eq: $id}}
+    where: {product_id: {_eq: $id}}
   ) {
-      affected_rows
+    affected_rows
   }
+
   insert_product_attribute(
-      objects: $attributes
+    objects: $attributes
   ) {
-      affected_rows
+    affected_rows
+  }
+
+  insert_images(
+    objects: $images
+  ) {
+    affected_rows
   }
 
   update_products(

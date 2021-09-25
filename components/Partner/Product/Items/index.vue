@@ -27,7 +27,7 @@
               >REFRESH</a-button
             >
           </div>
-          <div class="text-right col-lg-6 m-b-10" style="line-height: 30px">
+          <div class="mb-4 text-right col-lg-6" style="line-height: 30px">
             <a-pagination
               v-show="products_aggregate"
               size="small"
@@ -81,7 +81,7 @@
                 </a-space>
               </template>
               <template slot="_price" slot-scope="record">
-                <span class="text-xl font-bold">{{ record.price | number('0,0') }}</span>
+                <span class="font-mono text-xl font-bold">{{ record.price | number('0,0') }}</span>
                 đ
               </template>
               <template slot="_inStock" slot-scope="record">
@@ -108,10 +108,10 @@
               </template>
               <template slot="_actions" slot-scope="record">
                 <a-button
-                  type="link"
+                  type="dashed"
                   icon="copy"
-                  @click="$router.push(`/partner/product/edit/${record.id}`)"
-                >Clone</a-button>
+                  @click="$router.push(`/partner/product/clone/${record.id}`)"
+                >Nhân bản</a-button>
                 <a-button
                   type="link"
                   icon="edit"
@@ -121,14 +121,14 @@
               </template>
             </a-table>
           </div>
-          <div class="col-lg-6 m-t-15">
+          <div class="mt-4 col-lg-6">
             <bulk
               :actions="bulkActions"
               :selectedItems="selectedRowKeys"
               displaySelectedField="title"
             />
           </div>
-          <div class="text-right col-lg-6 m-t-15">
+          <div class="mt-4 text-right col-lg-6">
             <a-pagination
               v-show="products_aggregate && filterable === false"
               size="small"
@@ -313,7 +313,7 @@ export default class PartnerProductItems extends Vue {
     );
   }
 
-  mounted() {
+  mounted() {    
     const { page } = this.$route.query;
     this.currentPage = typeof page !== "undefined" ? +page : 1;
 

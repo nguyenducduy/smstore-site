@@ -12,19 +12,7 @@
             </a-form-item>
             <a-form-item
             >
-              <section class="grid grid-cols-1 gap-4 mb-5 md:grid-cols-4" v-if="myFiles.length > 0">
-                <template v-for="(image, i) in myFiles">
-                  <div :key="i">
-                     <a class="rounded-lg hover:opacity-75 " target="_blank">
-                        <img class="object-cover w-full h-64 rounded-lg" :src="$helper.getImage(image.path)"/>
-                      </a>
-                    <a-button icon="delete" size="small" type="danger" class="mt-2" @click="onRemoveImage(i)" />
-                  </div>
-                </template>
-              </section>
-
               <file-pond
-                v-show="myFiles.length < 4"
                 ref="pond"
                 name="file"
                 accepted-file-types="image/jpeg, image/png"
@@ -32,7 +20,7 @@
                 allowFileEncode="true"
                 allowFileMetadata="true"
                 allowMultiple="true"
-                :maxFiles="4 - myFiles.length"
+                :maxFiles="4"
                 :instantUpload="false"
               />
             </a-form-item>
@@ -214,12 +202,6 @@
                 @click.prevent="onSubmit"
                 >Lưu</a-button
               >
-              <a-button
-                size="large"
-                type="danger"
-                 @click.prevent="form.resetFields()">
-                Xóa
-              </a-button>
             </a-form-item>
           </div>
         </div>
@@ -232,7 +214,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { Getter } from 'vuex-class'
 
-import updateProduct from '@/gql/mutations/updateProduct.gql'
+import insertProduct from '@/gql/mutations/insertProduct.gql'
 import fetchProductCategories from '@/gql/queries/fetchProductCategories.gql'
 import fetchProductTypes from '@/gql/queries/fetchProductTypes.gql'
 import fetchProduct from '@/gql/queries/fetchProduct.gql'
@@ -249,7 +231,7 @@ import fetchProduct from '@/gql/queries/fetchProduct.gql'
     }
   }
 })
-export default class PartnerProductEditForm extends Vue {
+export default class PartnerProductCloneForm extends Vue {
   @Getter('users/shopId') shopId
 
   product: any = null
@@ -267,7 +249,6 @@ export default class PartnerProductEditForm extends Vue {
   };
 
   // upload
-  myFiles: any = []
   percent: number = 0
   $refs: {
     pond: HTMLFormElement,
@@ -300,10 +281,9 @@ export default class PartnerProductEditForm extends Vue {
   newOptionName: string = ''
   options: any = []
 
-  onRemoveImage(index) {
-    this.myFiles.splice(index, 1)
-  }
-  
+  // clone
+  cloneIndex: number = 1
+
   onSelectType(value) {
     this.attrs = []
     this.type_selected_values = this.types[value]['attributes']    
@@ -361,6 +341,7 @@ export default class PartnerProductEditForm extends Vue {
           let productItem = {
             store_id: this.shopId,
             name: values.name,
+            slug: `${this.$helper.getSlug(values.name)}-${this.shopId}`,
             options: this.options,
             description: this.description,
             category_id: values.category_id,
@@ -370,35 +351,21 @@ export default class PartnerProductEditForm extends Vue {
             type_id: this.types[this.type_selected]['id']
           }
 
-          let attrs = []
           if (values.attrs.length > 0) {
+            productItem['product_attributes'] = {
+              data: []
+            }
+
             values.attrs.map((attr_value, attr_id) => {
-              attrs.push({
+              productItem['product_attributes']['data'].push({
                 attribute_id: attr_id,
-                product_id: this.product.id,
                 store_id: this.shopId,
                 value: typeof attr_value !== 'undefined' ? attr_value : ''
               })
             })
           }
 
-          // diff to remove image from user old images
-          if (this.myFiles.length !== this.product.images.length) {
-            const diff = this.product.images.filter(({ id: id1 }) => !this.myFiles.some(({ id: id2 }) => id2 === id1))
-            // console.log(diff);
-            diff.map(async image => {
-              await this.$axios.post(
-                `${this.$config.NUXT_ENV_STORAGE_ENDPOINT}/products/delete`,
-                {
-                  id: image.id,
-                  path: image.path
-                }
-              )
-            })
-          }
-
           // upload files
-          let images = []
           const files = await this.$refs.pond.getFiles()
           let formData = new FormData();
           if (files.length > 0) {
@@ -423,9 +390,11 @@ export default class PartnerProductEditForm extends Vue {
             )
             
             if (response.data) {
+              productItem['images'] = {}
+              productItem['images']['data'] = []
+
               response.data.map(path => {  
-                images.push({
-                  product_id: this.product.id,
+                productItem['images']['data'].push({
                   store_id: this.shopId,
                   path: path
                 })
@@ -434,35 +403,19 @@ export default class PartnerProductEditForm extends Vue {
           }
 
           await this.$apollo.mutate({
-            mutation: updateProduct,
+            mutation: insertProduct,
             variables: {
-              id: this.product.id,
-              product: productItem,
-              attributes: attrs,
-              images: images
-            }
+              object: productItem
+            },
+            refetchQueries: ['products', 'products_aggregate']
           });
 
           this.loading = false;
           
-          this.$message.success(`Cập nhật sản phẩm "${values.name}" thành công`);
-          this.$bus.$emit('products.reload')
-          await this.$refs.pond.removeFiles()
-          this.$bus.$emit('products.reload')
-
-          // reload images
-          this.myFiles = []
-          const r = await this.$apollo.query({
-            query: fetchProduct,
-            variables: { id: this.$route.params.id },
-            fetchPolicy: 'network-only'
+          this.$message.success(`Sản phẩm "${values.name}" đã được thêm`)
+          this.form.setFieldsValue({
+            name: `${this.product.name} (Nhân bản ${this.cloneIndex+=1})`
           })
-          if (r.data.products_by_pk.images.length > 0) {
-            r.data.products_by_pk.images.map(image => {
-              this.myFiles.push(image)
-            });
-          }
-
         } catch (error) {
           this.loading = false;
         }
@@ -497,7 +450,7 @@ export default class PartnerProductEditForm extends Vue {
               value: product.category_id
             }),
             name: this.$form.createFormField({
-              value: product.name
+              value: `${product.name} (Nhân bản ${this.cloneIndex})`
             }),
             price: this.$form.createFormField({
               value: product.price
@@ -510,12 +463,6 @@ export default class PartnerProductEditForm extends Vue {
       });
 
       this.options = product.options
-
-      if (product.images.length > 0) {
-        product.images.map(image => {
-          this.myFiles.push(image)
-        })
-      }
     }
 
     const self = this

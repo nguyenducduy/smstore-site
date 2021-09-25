@@ -114,7 +114,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg-4">
+          <div class="col-lg-3">
             <!-- Options info -->
             <a-form-item v-bind="tailFormItemLayout">
               <h1 class="info-label">
@@ -315,10 +315,6 @@ export default class PartnerProductAddForm extends Vue {
     
     this.form.validateFields(async (err, values) => {
       this.loading = true
-      
-      console.log(values);
-      console.log(this.options);
-      console.log(this.description);
 
       if (!err) {
         this.options.map(option => {
@@ -404,7 +400,8 @@ export default class PartnerProductAddForm extends Vue {
             mutation: insertProduct,
             variables: {
               object: productItem
-            }
+            },
+            refetchQueries: ['products', 'products_aggregate']
           });
 
           this.loading = false;

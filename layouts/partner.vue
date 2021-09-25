@@ -8,7 +8,7 @@
         <topbar />
       </a-layout-header>
       <a-layout-content>
-        <Nuxt :key="$route.fullPath" />
+        <nuxt :key="$route.fullPath" />
       </a-layout-content>
       <a-layout-footer>
         <a-back-top />

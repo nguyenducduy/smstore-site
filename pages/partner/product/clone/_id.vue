@@ -5,7 +5,7 @@
         <breadcrumbs :data="bc" />
       </div>
       <div class="col-lg-12">
-        <partner-product-edit-form />
+        <partner-product-clone-form />
       </div>
     </div>
   </div>
@@ -14,7 +14,7 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import Breadcrumbs from "@/components/Layout/Breadcrumbs/index.vue";
-import PartnerProductEditForm from "@/components/Partner/Product/EditForm/index.vue";
+import PartnerProductCloneForm from "@/components/Partner/Product/CloneForm/index.vue";
 
 import fetchProduct from '@/gql/queries/fetchProduct.gql'
 
@@ -23,7 +23,7 @@ import fetchProduct from '@/gql/queries/fetchProduct.gql'
   middleware: ['partner-check-auth'],
   components: {
     Breadcrumbs,
-    PartnerProductEditForm
+    PartnerProductCloneForm
   }
 })
 export default class PartnerProductEditPage extends Vue {
@@ -50,12 +50,11 @@ export default class PartnerProductEditPage extends Vue {
           url: "/partner/product",
           active: false,
           sub: [
-            { icon: 'plus', name: 'Thêm', url: '/partner/product/add' },
-            { icon: 'copy', name: 'Nhân bản', url: '/partner/product/clone/' + r['data']['products_by_pk']['id'] },
+            { icon: 'plus', name: 'Thêm', url: '/partner/product/add' }
           ]
         },
         {
-          title: "Sửa: " + r['data']['products_by_pk']['name'],
+          title: "Clone SP",
           url: "",
           active: true
         }
