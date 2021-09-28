@@ -1,0 +1,10 @@
+query fetchProductImages(
+  $where: images_bool_exp
+) {
+  images(
+    where: $where
+  ) {
+    id
+    path
+  }
+}

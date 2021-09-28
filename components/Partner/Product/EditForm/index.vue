@@ -122,7 +122,13 @@
             </div>
             <div class="row">
               <div class="col-lg-12">
-                <medium-editor v-model="description" :options="editorOptions" class="p-4 border-2 rounded" />
+                <editor
+                  ref="editor"
+                  :options="editorOptions" 
+                  initialEditType="wysiwyg"
+                  height="800px"
+                />
+                <!-- <medium-editor v-model="description" :options="editorOptions" class="p-4 border-2 rounded" /> -->
               </div>
             </div>
           </div>
@@ -206,7 +212,6 @@
                 Clear
               </a-button>
               <a-button
-                class="mr-4"
                 icon="save"
                 type="primary"
                 size="large"
@@ -214,12 +219,6 @@
                 @click.prevent="onSubmit"
                 >Lưu</a-button
               >
-              <a-button
-                size="large"
-                type="danger"
-                 @click.prevent="form.resetFields()">
-                Xóa
-              </a-button>
             </a-form-item>
           </div>
         </div>
@@ -231,6 +230,8 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { Getter } from 'vuex-class'
+import settings from '@/config/settings'
+import debounce from 'lodash/debounce'
 
 import updateProduct from '@/gql/mutations/updateProduct.gql'
 import fetchProductCategories from '@/gql/queries/fetchProductCategories.gql'
@@ -271,6 +272,7 @@ export default class PartnerProductEditForm extends Vue {
   percent: number = 0
   $refs: {
     pond: HTMLFormElement,
+    editor: any
   };
 
   // attributes
@@ -287,14 +289,7 @@ export default class PartnerProductEditForm extends Vue {
   };
   
   // editor
-  description: string = ''
-  editorOptions: any = {
-    autoLink: true,
-    placeholder: {
-      text: 'Nhấn 2 lần để nhập mô tả sản phẩm',
-      hideOnClick: true
-    }
-  }
+  editorOptions = settings.editorOptions
 
   // product options
   newOptionName: string = ''
@@ -362,11 +357,12 @@ export default class PartnerProductEditForm extends Vue {
             store_id: this.shopId,
             name: values.name,
             options: this.options,
-            description: this.description,
+            description: this.$refs.editor.invoke('getHTML'),
             category_id: values.category_id,
             is_active: values.is_active,
             in_stock: values.in_stock,
             price: values.price,
+            sku: values.sku,
             type_id: this.types[this.type_selected]['id']
           }
 
@@ -445,24 +441,23 @@ export default class PartnerProductEditForm extends Vue {
 
           this.loading = false;
           
-          this.$message.success(`Cập nhật sản phẩm "${values.name}" thành công`);
-          this.$bus.$emit('products.reload')
           await this.$refs.pond.removeFiles()
-          this.$bus.$emit('products.reload')
 
           // reload images
           this.myFiles = []
           const r = await this.$apollo.query({
             query: fetchProduct,
             variables: { id: this.$route.params.id },
-            fetchPolicy: 'network-only'
+            fetchPolicy: 'no-cache'
           })
+
           if (r.data.products_by_pk.images.length > 0) {
             r.data.products_by_pk.images.map(image => {
               this.myFiles.push(image)
             });
           }
 
+          this.$message.success(`Cập nhật sản phẩm "${values.name}" thành công`);
         } catch (error) {
           this.loading = false;
         }
@@ -475,16 +470,19 @@ export default class PartnerProductEditForm extends Vue {
   }
 
   async mounted() {
+    console.log('a');
+    
     const r = await this.$apollo.query({
       query: fetchProduct,
       variables: { id: this.$route.params.id },
-      fetchPolicy: 'network-only'
+      fetchPolicy: 'no-cache'
     })
 
     if (r.data) {
       const product = r.data.products_by_pk
       this.product = product
-
+      // console.log(this.types);
+      
       this.type_selected = this.types.filter(x => x.id === product.type_id)
       const typeIndex = this.types.findIndex(x => x.id === product.type_id)
       this.type_selected = typeIndex
@@ -502,6 +500,9 @@ export default class PartnerProductEditForm extends Vue {
             price: this.$form.createFormField({
               value: product.price
             }),
+            sku: this.$form.createFormField({
+              value: product.sku
+            }),
             attrs: this.$form.createFormField({
               value: []
             }),
@@ -518,6 +519,7 @@ export default class PartnerProductEditForm extends Vue {
       }
     }
 
+    // await this.$helper.sleep(1000)
     const self = this
     this.$nextTick(() => {
       let attrs = []
@@ -528,6 +530,8 @@ export default class PartnerProductEditForm extends Vue {
       self.form.setFieldsValue({
         attrs: attrs
       })
+      
+      self.$refs.editor.invoke('setHTML', self.product.description)
     })
   }
 }
@@ -540,4 +544,5 @@ export default class PartnerProductEditForm extends Vue {
 .ant-card-grid {
   box-shadow: none !important;
 }
+
 </style>

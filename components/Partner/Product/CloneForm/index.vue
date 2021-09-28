@@ -143,7 +143,11 @@
                         - Giảm
                       </a-select-option>
                     </a-select>
-                    <a-input v-model="value.price" suffix="đ"></a-input>
+                    <a-input-number
+                      :formatter="value => `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                      :parser="value => value.replace(/\đ\s?|(,*)/g, '')"
+                      v-model="value.price" suffix="đ">
+                    </a-input-number>
                     <a-button type="link" icon="minus" @click="removeOptionValue(i, k)"></a-button>
                   </div>
                 </div>
@@ -348,6 +352,7 @@ export default class PartnerProductCloneForm extends Vue {
             is_active: values.is_active,
             in_stock: values.in_stock,
             price: values.price,
+            sku: values.sku,
             type_id: this.types[this.type_selected]['id']
           }
 
@@ -407,7 +412,7 @@ export default class PartnerProductCloneForm extends Vue {
             variables: {
               object: productItem
             },
-            refetchQueries: ['products', 'products_aggregate']
+            refetchQueries: () => ['products']
           });
 
           this.loading = false;
@@ -416,6 +421,7 @@ export default class PartnerProductCloneForm extends Vue {
           this.form.setFieldsValue({
             name: `${this.product.name} (Nhân bản ${this.cloneIndex+=1})`
           })
+          await this.$refs.pond.removeFiles()
         } catch (error) {
           this.loading = false;
         }
@@ -454,6 +460,9 @@ export default class PartnerProductCloneForm extends Vue {
             }),
             price: this.$form.createFormField({
               value: product.price
+            }),
+            sku: this.$form.createFormField({
+              value: product.sku
             }),
             attrs: this.$form.createFormField({
               value: []

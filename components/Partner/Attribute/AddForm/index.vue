@@ -15,6 +15,7 @@
         :label="'Thuộc tính ' + (k+1)"
       >
         <a-input
+          @keypress.enter="__add"
           v-decorator="[
             `attrs[${k}]['value']`,
             {

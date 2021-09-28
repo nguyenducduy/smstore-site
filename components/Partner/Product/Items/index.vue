@@ -81,7 +81,7 @@
                 </a-space>
               </template>
               <template slot="_price" slot-scope="record">
-                <span class="font-mono text-xl font-bold">{{ record.price | number('0,0') }}</span>
+                <span class="font-mono text-xl">{{ record.price | number('0,0') }}</span>
                 đ
               </template>
               <template slot="_inStock" slot-scope="record">
@@ -364,11 +364,11 @@ export default class PartnerProductItems extends Vue {
     
     this.sortedInfo = currentSort;
     this.q = currentSearchText;
-    
+
     if (this.products === null && this.products_aggregate === null) {
       const r1 = await this.$apollo.query({
         query: fetchProducts,
-        variables: variables
+        variables: variables,
       })
       this.products = r1.data.products
 
@@ -378,7 +378,7 @@ export default class PartnerProductItems extends Vue {
           where: {
             _and: getFilterBy(this)
           }
-        }
+        },
       })
       this.products_aggregate = r2.data.products_aggregate
 
@@ -403,12 +403,12 @@ export default class PartnerProductItems extends Vue {
       });
     }
 
-    this.loading = false;
-
     // must re-arrange because graphql return not match order of search engine
     if (currentSearchText.length > 0) {
       this.__reOrder(currentSearchResult)
     }
+
+    this.loading = false;
   }
 }
 </script>

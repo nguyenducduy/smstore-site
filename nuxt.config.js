@@ -52,7 +52,7 @@ export default {
     { src: '@/plugins/axios.js' },
     { src: '@/plugins/zk-table.js', mode: 'client' },
     { src: '@/plugins/filepond.js', mode: 'client' },
-    { src: '@/plugins/medium-editor.js', mode: 'client' },
+    { src: '@/plugins/tui-editor.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

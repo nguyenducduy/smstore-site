@@ -18,6 +18,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import deleteProduct from "@/gql/mutations/deleteProduct.gql";
+import fetchProductImages from '@/gql/queries/fetchProductImages.gql'
 
 @Component({})
 export default class MediaDeleteButton extends Vue {
@@ -27,6 +28,15 @@ export default class MediaDeleteButton extends Vue {
 
   async onDelete() {
     this.loading = true;
+
+    const r = await this.$apollo.query({
+      query: fetchProductImages,
+      variables: {
+        where: {
+          product_id: { _eq: this.id }
+        }
+      }
+    })
     
     try {
       await this.$apollo.mutate({
@@ -35,6 +45,18 @@ export default class MediaDeleteButton extends Vue {
           id: this.id
         }
       });
+      
+      if (r.data.images.length > 0) {
+        r.data.images.map(async image => {
+          await this.$axios.post(
+            `${this.$config.NUXT_ENV_STORAGE_ENDPOINT}/products/delete`,
+            {
+              id: image.id,
+              path: image.path
+            }
+          )
+        })
+      }
 
       this.loading = false;
       this.$bus.$emit('products.reload');

@@ -342,6 +342,7 @@ export default class PartnerProductAddForm extends Vue {
             is_active: values.is_active,
             in_stock: values.in_stock,
             price: values.price,
+            sku: values.sku,
             type_id: this.types[this.type_selected]['id']
           }
 
@@ -400,14 +401,12 @@ export default class PartnerProductAddForm extends Vue {
             mutation: insertProduct,
             variables: {
               object: productItem
-            },
-            refetchQueries: ['products', 'products_aggregate']
+            }
           });
 
           this.loading = false;
-          this.form.resetFields()
-          this.description = ''
-          
+
+          await this.$refs.pond.removeFiles()
           this.$message.success(`Sản phẩm "${values.name}" đã được thêm`)
         } catch (error) {
           this.loading = false;

@@ -37,6 +37,15 @@ export default {
     ordinal: {
       includeNumber: false
     }
+  },
+
+  // editor options
+  editorOptions: {
+    minHeight: '300px',
+    language: 'vi-VN',
+    useCommandShortcut: true,
+    usageStatistics: false,
+    hideModeSwitch: false,
   }
 };
   

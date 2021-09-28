@@ -1,5 +1,6 @@
 import {
   ApolloLink,
+  InMemoryCache
 } from "apollo-boost";
 import { onError } from "apollo-link-error";
 import fetch from 'isomorphic-fetch';
@@ -13,7 +14,6 @@ export default function({
   store,
   $config: {
     NUXT_ENV_GRAPHQL_URI,
-    NUXT_ENV_GUEST_TOKEN,
     NUXT_ENV_GRAPHQLWS_URI
   }
 }) {  
@@ -34,7 +34,6 @@ export default function({
     }
   })
   
-  // console.info('guest token: ', NUXT_ENV_GUEST_TOKEN);
   // console.log('Current environment is: ', env.NODE_ENV);
   console.info('Connected to GraphQL server at: ', NUXT_ENV_GRAPHQL_URI);
 
@@ -55,7 +54,7 @@ export default function({
         }
 
         return fetch(uri, options)
-      },
+      }
     })]),
     wsEndpoint: NUXT_ENV_GRAPHQLWS_URI,
     connectToDevTools: true

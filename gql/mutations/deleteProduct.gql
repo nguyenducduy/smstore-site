@@ -3,5 +3,12 @@ mutation deleteProduct($id: Int!) {
     where: { id: { _eq: $id } }
   ) {
     affected_rows
+    returning {
+      id
+      images {
+        id
+        path
+      }
+    }
   }
 }
