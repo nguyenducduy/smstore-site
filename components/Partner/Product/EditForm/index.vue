@@ -357,7 +357,7 @@ export default class PartnerProductEditForm extends Vue {
             store_id: this.shopId,
             name: values.name,
             options: this.options,
-            description: this.$refs.editor.invoke('getHTML'),
+            description: this.$helper.replaceBRWithEmptyBlock(this.$refs.editor.invoke('getHTML')),
             category_id: values.category_id,
             is_active: values.is_active,
             in_stock: values.in_stock,

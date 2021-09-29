@@ -36,8 +36,6 @@ export default {
   css: [
     '@/assets/bootstrap.min.css',
     '@/assets/fonts/font-awesome/css/font-awesome.min.css',
-    'medium-editor/dist/css/medium-editor.css',
-    'vuejs-medium-editor/src/themes/default.css',
     '@/assets/global.scss'
   ],
 
