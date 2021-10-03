@@ -1,5 +1,5 @@
-import '@toast-ui/editor/dist/toastui-editor.css';
 import Vue from 'vue'
-import { Editor } from '@toast-ui/vue-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import Editor from '@/components/Layout/Editor/index.vue'
 
 Vue.component('editor', Editor)
