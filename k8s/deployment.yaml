@@ -15,16 +15,16 @@ spec:
       containers:
       - name: smstore-site
         image: nguyenducduy/smstore-site:$SEMAPHORE_WORKFLOW_ID
-      env:
-      - name: NUXT_ENV_GRAPHQL_URI
-        value: "https://core.tiemcuatui.com/v1/graphql"
-      - name: NUXT_ENV_GRAPHQLWS_URI
-        value: "wss://core.tiemcuatui.com/v1/graphql"
-      - name: NUXT_ENV_STORAGE_ENDPOINT
-        value: "https://file-service.tiemcuatui.com"
-      - name: NUXT_ENV_S3_ENDPOINT
-        value: "https://tct.sgp1.digitaloceanspaces.com"
-      - name: NODE_ENV
-        value: "production"
+        env:
+        - name: NUXT_ENV_GRAPHQL_URI
+          value: "https://core.tiemcuatui.com/v1/graphql"
+        - name: NUXT_ENV_GRAPHQLWS_URI
+          value: "wss://core.tiemcuatui.com/v1/graphql"
+        - name: NUXT_ENV_STORAGE_ENDPOINT
+          value: "https://file-service.tiemcuatui.com"
+        - name: NUXT_ENV_S3_ENDPOINT
+          value: "https://tct.sgp1.digitaloceanspaces.com"
+        - name: NODE_ENV
+          value: "production"
       imagePullSecrets: # if using a private image
       - name: dockerhub-user
