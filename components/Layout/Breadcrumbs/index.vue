@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-6">
     <a-breadcrumb>
       <a-breadcrumb-item v-for="(item, i) in data" :key="i" class="text-xl">
         <nuxt-link :to="item.url" v-if="item.active === false">

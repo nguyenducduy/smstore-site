@@ -1,7 +1,7 @@
 <template>
   <div class="row" v-lazy-container="{ selector: 'img' }">
     <a-spin :spinning="loading">
-      <div :class="`col-lg-2 pt-6 ${filterable ? 'shadow-lg' : '' }`">
+      <div :class="`col-lg-2 pt-8 ${filterable ? 'shadow-lg' : '' }`">
         <p class="mb-4 filterable-header">
           <span>
             <a-icon type="filter" /> &nbsp; Bộ lọc
@@ -73,7 +73,9 @@
                   :to="`/partner/product/edit/${record.id}`">
                   {{ record.name }}
                 </nuxt-link>
-                <a-space>{{ record.sku }}</a-space>
+                <a-space>
+                  <small>#{{ record.sku }}</small>
+                </a-space>
                 <br/>
                 <a-space class="pt-2" v-if="record.options.length > 0">
                   <i class="fa fa-clone"></i>
@@ -82,7 +84,7 @@
               </template>
               <template slot="_price" slot-scope="record">
                 <span class="font-mono text-xl">{{ record.price | number('0,0') }}</span>
-                đ
+                &#8363;
               </template>
               <template slot="_inStock" slot-scope="record">
                 <a-tag color="green" v-if="record.in_stock">

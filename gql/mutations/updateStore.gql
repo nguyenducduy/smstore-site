@@ -1,0 +1,13 @@
+mutation updateStore(
+  $id: Int!
+  $object: stores_set_input
+) {
+  update_stores_by_pk(
+    pk_columns: {
+      id: $id
+    }
+    _set: $object
+  ) {
+    id
+  }
+}

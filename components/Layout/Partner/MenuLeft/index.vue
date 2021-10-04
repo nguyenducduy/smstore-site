@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div :class="$style.logo">
+    <div :class="$style.logo" v-if="loggedShop">
       <div :class="$style.logoContainer">
-        <!-- <img src="@/assets/logo.svg" @click="$router.push('/admin')" /> -->
+        <img :src="`${$helper.getImage(loggedShop.logo_path)}`" @click="$router.push('/partner')" />
       </div>
     </div>
     <div :class="[$style.navigation, $style.light]">
@@ -73,6 +73,7 @@ export default class MenuLeft extends Vue {
 
   @Getter("openKeys") getOpenKeys;
   @Getter("selectedKeys") getSelectedKeys;
+  @Getter('users/loggedShop') loggedShop
 
   get items() {
     return [
@@ -107,9 +108,9 @@ export default class MenuLeft extends Vue {
       },
       {
         id: '3',
-        name: 'Blog',
+        name: 'Trang',
         path: '/partner/blog',
-        icon: 'fa fa-book',
+        icon: 'fa fa-pagelines',
         children: [
           {
             id: '3.1',
@@ -122,6 +123,30 @@ export default class MenuLeft extends Vue {
             path: '/partner/blog-categroy'
           }
         ]
+      },
+      {
+        id: '4',
+        name: 'Banner',
+        path: '/partner/banner',
+        icon: 'fa fa-picture-o'
+      },
+      {
+        id: '5',
+        name: 'Đơn hàng',
+        path: '/partner/order',
+        icon: 'fa fa-shopping-cart'
+      },
+      {
+        id: '6',
+        name: 'Đánh giá & Nhận xét',
+        path: '/partner/review',
+        icon: 'fa fa-comments'
+      },
+      {
+        id: '7',
+        name: 'Cài đặt',
+        path: '/partner/setting',
+        icon: 'fa fa-cog'
       },
     ];
   }

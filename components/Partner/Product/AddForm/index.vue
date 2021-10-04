@@ -110,11 +110,16 @@
             </div>
             <div class="row">
               <div class="col-lg-12">
-                <medium-editor v-model="description" :options="editorOptions" class="p-4 border-2 rounded" />
+                <editor
+                  ref="editor"
+                  :options="editorOptions" 
+                  initialEditType="wysiwyg"
+                  height="800px"
+                />
               </div>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="col-lg-4">
             <!-- Options info -->
             <a-form-item v-bind="tailFormItemLayout">
               <h1 class="info-label">
@@ -135,7 +140,7 @@
                   </div>
                   <div class="flex gap-2 pb-2 bg-gray-50 col-lg-12" v-for="value, k in option.values" :key="k">
                     <a-input v-model="value.val" @keyup.enter="addOptionValue(i)"></a-input>
-                    <a-select v-model="value.mode" placeholder="Tăng/Giảm">
+                    <a-select v-model="value.mode" placeholder="Tăng/Giảm" style="width: 200px">
                       <a-select-option value="inc">
                         + Tăng
                       </a-select-option>
@@ -143,7 +148,13 @@
                         - Giảm
                       </a-select-option>
                     </a-select>
-                    <a-input v-model="value.price" suffix="đ"></a-input>
+                    <a-input-number
+                      style="width: 300px"
+                      v-model="value.price"
+                      suffix="đ"
+                      :formatter="value => `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                      :parser="value => value.replace(/\đ\s?|(,*)/g, '')"
+                    ></a-input-number>
                     <a-button type="link" icon="minus" @click="removeOptionValue(i, k)"></a-button>
                   </div>
                 </div>
@@ -210,6 +221,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { Getter } from 'vuex-class'
+import settings from '@/config/settings'
 
 import insertProduct from '@/gql/mutations/insertProduct.gql'
 import fetchProductCategories from '@/gql/queries/fetchProductCategories.gql'
@@ -247,6 +259,7 @@ export default class PartnerProductAddForm extends Vue {
   percent: number = 0
   $refs: {
     pond: HTMLFormElement,
+    editor: any
   };
 
   // attributes
@@ -263,14 +276,7 @@ export default class PartnerProductAddForm extends Vue {
   };
   
   // editor
-  description: string = ''
-  editorOptions: any = {
-    autoLink: true,
-    placeholder: {
-      text: 'Nhấn 2 lần để nhập mô tả sản phẩm',
-      hideOnClick: true
-    }
-  }
+  editorOptions = settings.editorOptions
 
   // product options
   newOptionName: string = ''
@@ -337,7 +343,7 @@ export default class PartnerProductAddForm extends Vue {
             name: values.name,
             slug: `${this.$helper.getSlug(values.name)}-${this.shopId}`,
             options: this.options,
-            description: this.description,
+            description: this.$helper.replaceBRWithEmptyBlock(this.$refs.editor.invoke('getHTML')),
             category_id: values.category_id,
             is_active: values.is_active,
             in_stock: values.in_stock,

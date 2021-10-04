@@ -5,7 +5,8 @@ export const state = () => ({
     token: null,
     fcmToken: null,
     loggedUser: null,
-    favorites: []
+    favorites: [],
+    shop: null
   })
   
   export const mutations = {
@@ -20,6 +21,9 @@ export const state = () => ({
     },
     SET_FCM_TOKEN(state, token) {
       state.fcmToken = token;
+    },
+    SET_SHOP(state, shop) {
+      state.shop = shop
     }
   }
   
@@ -28,6 +32,9 @@ export const state = () => ({
   };
   
   export const getters = {
+    loggedShop(state) {
+      return state.shop || null
+    },
     shopId(state) {
       return +state.loggedUser['https://hasura.io/jwt/claims']['x-hasura-store-id'] || 0
     },

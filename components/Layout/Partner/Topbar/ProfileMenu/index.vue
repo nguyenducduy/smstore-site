@@ -18,10 +18,10 @@
         </a>
       </a-menu-item>
       <a-menu-item>
-        <a href="javascript: void(0);" @click="onLogout">
+        <nuxt-link to="/partner/logout">
           <i :class="$style.menuIcon" class="fa fa-sign-out"></i>
           Thoát
-        </a>
+        </nuxt-link>
       </a-menu-item>
     </a-menu>
   </a-dropdown>
@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "nuxt-property-decorator";
-import { Getter } from "vuex-class";
+import { Mutation, Getter } from "vuex-class";
 
 import fetchUser from "@/gql/queries/fetchUser.gql";
 
@@ -38,24 +38,9 @@ import fetchUser from "@/gql/queries/fetchUser.gql";
 })
 export default class ProfileMenu extends Vue {
   @Getter("users/loggedUser") loggedUser;
+  @Mutation('users/SET_SHOP') setShop
 
   userInfo: any = null;
-
-  async onLogout() {
-    this.$nuxt.$loading.start();
-
-    try {
-      Vue.ls.remove('token');
-      this.$cookiz.remove('token');
-      this.$apolloHelpers.onLogout();
-
-      return (window.location.href = `
-          ${window.location.protocol}//${window.location.hostname +
-        (window.location.port ? ":" + window.location.port : "")}/admin`);
-    } catch (error) {
-      this.$nuxt.$loading.finish();
-    }
-  }
 
   async mounted() {
     try {
@@ -65,6 +50,8 @@ export default class ProfileMenu extends Vue {
       });  
       
       this.userInfo = r['data']['users_by_pk'];
+
+      this.setShop(r['data']['users_by_pk']['store'])
     } catch (error) {
       
     }

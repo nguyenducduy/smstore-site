@@ -1,11 +1,20 @@
 <template>
   <div class="row">
     <div class="col-lg-6">
-      <!-- <a style="margin-right: 10px; margin-left: 20px;" href="" target="_blank">Go to site <i class="fa fa-arrow-right"></i></a> -->
+      <div class="ml-4 col-lg-6">
+        <a-input placeholder="Tìm sp" />
+      </div>
     </div>
     <div class="col-lg-6">
       <div :class="$style.topbar">
+        
         <profile-menu class="mr-8" />
+        <span v-if="loggedShop">
+          <a target="_blank" :href="`https://${loggedShop.domain}.tiemcuatui.com`">
+            {{ loggedShop.domain }}.tiemcuatui.com
+          </a>
+           &nbsp; | &nbsp;
+        </span>
       </div>
     </div>
   </div>
@@ -13,6 +22,7 @@
 
 <script lang="ts">
 import { Vue, Component } from "nuxt-property-decorator";
+import { Getter } from 'vuex-class'
 import ProfileMenu from "@/components/Layout/Partner/Topbar/ProfileMenu/index.vue";
 
 @Component({
@@ -21,7 +31,9 @@ import ProfileMenu from "@/components/Layout/Partner/Topbar/ProfileMenu/index.vu
     ProfileMenu,
   }
 })
-export default class Topbar extends Vue {}
+export default class Topbar extends Vue {
+  @Getter('users/loggedShop') loggedShop
+}
 </script>
 
 <style lang="scss" module>

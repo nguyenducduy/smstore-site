@@ -128,11 +128,10 @@
                   initialEditType="wysiwyg"
                   height="800px"
                 />
-                <!-- <medium-editor v-model="description" :options="editorOptions" class="p-4 border-2 rounded" /> -->
               </div>
             </div>
           </div>
-          <div class="col-lg-3">
+          <div class="col-lg-4">
             <!-- Options info -->
             <a-form-item v-bind="tailFormItemLayout">
               <h1 class="info-label">
@@ -153,7 +152,7 @@
                   </div>
                   <div class="flex gap-2 pb-2 bg-gray-50 col-lg-12" v-for="value, k in option.values" :key="k">
                     <a-input v-model="value.val" @keyup.enter="addOptionValue(i)"></a-input>
-                    <a-select v-model="value.mode" placeholder="Tăng/Giảm">
+                    <a-select v-model="value.mode" placeholder="Tăng/Giảm" style="width: 200px">
                       <a-select-option value="inc">
                         + Tăng
                       </a-select-option>
@@ -161,7 +160,13 @@
                         - Giảm
                       </a-select-option>
                     </a-select>
-                    <a-input v-model="value.price" suffix="đ"></a-input>
+                    <a-input-number
+                      style="width: 300px"
+                      v-model="value.price"
+                      suffix="đ"
+                      :formatter="value => `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                      :parser="value => value.replace(/\đ\s?|(,*)/g, '')"
+                    ></a-input-number>
                     <a-button type="link" icon="minus" @click="removeOptionValue(i, k)"></a-button>
                   </div>
                 </div>
@@ -231,7 +236,6 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { Getter } from 'vuex-class'
 import settings from '@/config/settings'
-import debounce from 'lodash/debounce'
 
 import updateProduct from '@/gql/mutations/updateProduct.gql'
 import fetchProductCategories from '@/gql/queries/fetchProductCategories.gql'

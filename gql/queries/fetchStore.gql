@@ -1,0 +1,11 @@
+query fetchStore($id: Int!) {
+  stores_by_pk(id: $id) {
+    id
+    screen_name
+    description
+    email
+    phone_number
+    address
+    logo_path
+  }
+}

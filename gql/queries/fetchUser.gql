@@ -7,5 +7,11 @@ query fetchUser($id: Int!) {
     email
     phone_number
     activated_code
+    store {
+      id
+      screen_name
+      domain
+      logo_path
+    }
   }
 }

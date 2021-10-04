@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen pt-24 pb-5 font-sans antialiased bg-blue-900">
-    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-1/4 sm:m-auto lg:w-2/5">
-      <h1 class="text-4xl font-bold text-center text-yellow-500">Tiệm của tui<span class="text-blue-500"> Partner</span></h1>
+  <div class="min-h-screen pt-24 pb-5 font-sans antialiased bg-black">
+    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-1/4 sm:m-auto lg:w-1/4">
+      <h1 class="text-4xl font-bold text-center text-yellow-300">Tiệm của tui<span class="text-blue-500"> Partner</span></h1>
         <div class="flex flex-col p-10 space-y-6 bg-white rounded-lg shadow">
           <h1 class="text-xl font-bold text-center">Kích hoạt tài khoản & tiệm</h1>
           <p>
@@ -86,15 +86,16 @@
             </a-form-item>
             <a-form-item class="text-center">
               <a-button
+                size="large"
                 type="primary"
                 htmlType="submit"
                 :loading="loading"
-                >Đăng ký</a-button>
+                >Kích hoạt</a-button>
             </a-form-item>
           </a-form>
         </div>
       <div class="flex justify-center text-sm text-gray-100">
-        <p>&copy;2021. tiemcuatui.com</p>
+        <p>&copy; 2021 tiemcuatui.com</p>
       </div>
     </div>
   </div>

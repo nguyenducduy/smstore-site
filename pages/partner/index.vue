@@ -11,8 +11,8 @@ import { Vue, Component, Watch } from "nuxt-property-decorator";
 import Breadcrumbs from "@/components/Layout/Breadcrumbs/index.vue";
 
 @Component({
-  name: 'partner-dashboard-page',
   layout: 'partner',
+  middleware: ['partner-check-auth'],
   components: {
     Breadcrumbs
   }

@@ -1,7 +1,7 @@
 <template>
-  <div class="min-h-screen pt-24 pb-5 font-sans antialiased bg-gray-900">
-    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-96 sm:m-auto">
-      <h1 class="text-4xl font-bold text-center text-yellow-500">Tiệm của tui<span class="text-blue-500"> Partner</span></h1>
+  <div class="min-h-screen pt-24 pb-5 font-sans antialiased bg-black">
+    <div class="flex flex-col justify-center w-1/5 mx-5 mb-5 space-y-8 sm:m-auto">
+      <h1 class="text-4xl font-bold text-center text-yellow-300">Tiệm của tui<span class="text-blue-500"> Partner</span></h1>
         <div class="flex flex-col p-10 space-y-6 bg-white rounded-lg shadow">
           <h1 class="text-xl font-bold text-center">Đăng nhập tài khoản Partner</h1>
           <a-form class="login-form" :form="form" @submit="onSubmit">
@@ -48,17 +48,20 @@
                 />
               </a-input-password>
             </a-form-item>
+            <a-form-item>
               <a-button type="link">Quên mật khẩu?</a-button>
               <a-button
+                size="large"
                 type="primary"
                 htmlType="submit"
                 :loading="loading"
                 >Đăng nhập</a-button
               >
+            </a-form-item>
           </a-form>
         </div>
       <div class="flex justify-center text-sm text-gray-500">
-        <p>&copy;2021. tiemcuatui.com</p>
+        <p>&copy; 2021 tiemcuatui.com</p>
       </div>
     </div>
   </div>
@@ -69,6 +72,7 @@ import { Vue, Component } from "nuxt-property-decorator";
 import { Mutation, Getter, Action } from "vuex-class";
 
 import loginPartner from "@/gql/queries/loginPartner.gql";
+import fetchStore from '@/gql/queries/fetchStore.gql'
 
 @Component({
   name: 'partner-login-page',
@@ -104,15 +108,14 @@ export default class PartnerLoginPage extends Vue {
         this.loading = true;
 
         try {
-          const r = await this.$apollo.mutate({
-            mutation: loginPartner,
+          const r = await this.$apollo.query({
+            query: loginPartner,
             variables: {
               email: values.email,
               password: values.password
             }
           });
 
-          console.log(r);
           if (r['data']['login_partner']['token']) {
             const token = r['data']['login_partner']['token'];
             Vue.ls.set('token', token);
