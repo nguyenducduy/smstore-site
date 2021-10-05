@@ -9,12 +9,14 @@ export default {
     NUXT_ENV_GRAPHQLWS_URI: process.env.NUXT_ENV_GRAPHQLWS_URI,
     NUXT_ENV_GUEST_TOKEN: process.env.NUXT_ENV_GUEST_TOKEN,
     NUXT_ENV_STORAGE_ENDPOINT: process.env.NUXT_ENV_STORAGE_ENDPOINT,
-    NUXT_ENV_S3_ENDPOINT: process.env.NUXT_ENV_S3_ENDPOINT
+    NUXT_ENV_S3_ENDPOINT: process.env.NUXT_ENV_S3_ENDPOINT,
+    NUXT_ENV_MEILISEARCH_URL: process.env.NUXT_ENV_MEILISEARCH_URL,
+    NUXT_ENV_MEILISEARCH_API_KEY: process.env.NUXT_ENV_MEILISEARCH_API_KEY,
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s',
+    titleTemplate: '%s | Tiệm của tui',
     htmlAttrs: {
       lang: 'en',
       'data-theme': 'light'
@@ -51,6 +53,7 @@ export default {
     { src: '@/plugins/zk-table.js', mode: 'client' },
     { src: '@/plugins/filepond.js', mode: 'client' },
     { src: '@/plugins/tui-editor.js', mode: 'client' },
+    { src: '@/plugins/vue-autocomplete.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

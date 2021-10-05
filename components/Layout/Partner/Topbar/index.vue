@@ -1,13 +1,12 @@
 <template>
   <div class="row">
     <div class="col-lg-6">
-      <div class="ml-4 col-lg-6">
-        <a-input placeholder="Tìm sp" />
+      <div class="z-50 ml-4 col-lg-6">
+        <search-bar />
       </div>
     </div>
     <div class="col-lg-6">
       <div :class="$style.topbar">
-        
         <profile-menu class="mr-8" />
         <span v-if="loggedShop">
           <a target="_blank" :href="`https://${loggedShop.domain}.tiemcuatui.com`">
@@ -24,11 +23,13 @@
 import { Vue, Component } from "nuxt-property-decorator";
 import { Getter } from 'vuex-class'
 import ProfileMenu from "@/components/Layout/Partner/Topbar/ProfileMenu/index.vue";
+import SearchBar from '@/components/Layout/Partner/Topbar/SearchBar/index.vue'
 
 @Component({
   name: "topbar",
   components: {
     ProfileMenu,
+    SearchBar
   }
 })
 export default class Topbar extends Vue {

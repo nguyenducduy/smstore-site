@@ -39,7 +39,7 @@ import {
   Timeline,
   Alert,
   Progress,
-  Popover
+  Popover,
 } from "ant-design-vue";
 
 Vue.use(Popover);

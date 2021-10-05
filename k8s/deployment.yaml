@@ -24,6 +24,13 @@ spec:
           value: "https://file-service.tiemcuatui.com"
         - name: NUXT_ENV_S3_ENDPOINT
           value: "https://tct.sgp1.digitaloceanspaces.com"
+        - name: NUXT_ENV_MEILISEARCH_URL
+          value: "https://search.tiemcuatui.com"
+        - name: NUXT_ENV_MEILISEARCH_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: smstore-meili-master-key
+              key: value
         - name: NODE_ENV
           value: "production"
       imagePullSecrets: # if using a private image

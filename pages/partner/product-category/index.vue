@@ -1,6 +1,6 @@
 <template>
   <div class="p-8 content">
-    <div class="mb-8 row">
+    <div class="mb-4 row">
       <div class="col-lg-6">
         <breadcrumbs :data="bc" />
       </div>
