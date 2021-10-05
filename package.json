@@ -41,8 +41,7 @@
     "vue-ls": "^3.2.2",
     "vue-table-with-tree-grid": "^0.2.4",
     "vue2-filters": "^0.13.0",
-    "vuex-class": "^0.3.2",
-    "yarn": "^1.22.11"
+    "vuex-class": "^0.3.2"
   },
   "devDependencies": {
     "@nuxt/babel-preset-app": "^2.15.8",

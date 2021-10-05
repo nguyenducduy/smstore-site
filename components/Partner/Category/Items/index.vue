@@ -34,7 +34,7 @@
         </template>
       </zk-table>
     </div>
-    <product-category-edit-form />
+    <!-- <product-category-edit-form /> -->
   </div>
 </template>
 
@@ -51,11 +51,6 @@ import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
     ProductCategoryEditForm,
     ProductCategoryDeleteButton,
     EditableOrderNo
-  },
-  apollo: {
-    categories: {
-      query: fetchCategories
-    }
   }
 })
 export default class PartnerProductCategoriesItems extends Vue {
@@ -105,7 +100,15 @@ export default class PartnerProductCategoriesItems extends Vue {
     // console.log(rowIndex);
   }
 
-  mounted() {
+  async mounted() {
+    const r = await this.$apollo.query({
+      query: fetchCategories
+    })
+
+    if (r.data) {
+      this.categories = r.data.categories
+    }
+
     this.$bus.$on('categories.reload', () => {
       this.$apollo.queries.categories.refetch();
     })
