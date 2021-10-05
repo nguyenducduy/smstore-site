@@ -21,15 +21,3 @@ spec:
         backend:
           serviceName: smstore-site
           servicePort: 80
-      - path: /partner(.*)
-        backend:
-          serviceName: smstore-site
-          servicePort: 80
-      - path: /admin(.*)
-        backend:
-          serviceName: smstore-site
-          servicePort: 80
-      - path: /_smstore_site(.*)
-        backend:
-          serviceName: smstore-site
-          servicePort: 80
