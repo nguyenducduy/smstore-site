@@ -104,6 +104,8 @@ export default class PartnerProductCategoriesItems extends Vue {
     const r = await this.$apollo.query({
       query: fetchCategories
     })
+    console.log(r);
+    
 
     if (r.data) {
       this.categories = r.data.categories

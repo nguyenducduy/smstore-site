@@ -56,7 +56,8 @@ export default function({
         return fetch(uri, options)
       }
     })]),
+    cache: new InMemoryCache(),
     wsEndpoint: NUXT_ENV_GRAPHQLWS_URI,
-    connectToDevTools: false
+    connectToDevTools: true
   } 
 }
