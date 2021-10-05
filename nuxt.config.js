@@ -119,5 +119,20 @@ export default {
 
   tailwindcss: {
     jit: true
-  }
+  },
+
+  hooks: {
+    render: {
+      errorMiddleware(app) {
+        app.use((error, req, res, next) => {
+          console.log(error);
+          console.log(res);
+          // res.writeHead(307, {
+          //   Location: '/network-error',
+          // })
+          // res.end()
+        })
+      },
+    },
+  },
 }

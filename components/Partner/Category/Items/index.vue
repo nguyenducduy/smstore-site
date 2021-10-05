@@ -9,7 +9,7 @@
         Thu gọn
         <a-icon type="caret-up" />
       </a-button>
-      <zk-table
+      <!-- <zk-table
         :data="categories"
         :columns="columns"
         index-text="#"
@@ -32,7 +32,7 @@
           >Sửa</a-button>
           <product-category-delete-button :id="scope.row.id" />
         </template>
-      </zk-table>
+      </zk-table> -->
     </div>
     <!-- <product-category-edit-form /> -->
   </div>
@@ -41,16 +41,16 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "nuxt-property-decorator";
 // import ProductCategoryEditForm from "@/components/Partner/Category/EditForm/index.vue";
-import ProductCategoryDeleteButton from "@/components/Partner/Category/DeleteButton/index.vue";
-import EditableOrderNo from "@/components/Partner/Category/EditableOrderNo/index.vue";
+// import ProductCategoryDeleteButton from "@/components/Partner/Category/DeleteButton/index.vue";
+// import EditableOrderNo from "@/components/Partner/Category/EditableOrderNo/index.vue";
 
 import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
 
 @Component({
   components: {
     // ProductCategoryEditForm,
-    ProductCategoryDeleteButton,
-    EditableOrderNo
+    // ProductCategoryDeleteButton,
+    // EditableOrderNo
   }
 })
 export default class PartnerProductCategoriesItems extends Vue {
@@ -96,9 +96,9 @@ export default class PartnerProductCategoriesItems extends Vue {
     this.collapsed = !this.collapsed;
   }
 
-  onCheck(row, rowIndex, $event) {
-    // console.log(rowIndex);
-  }
+  // onCheck(row, rowIndex, $event) {
+  //   // console.log(rowIndex);
+  // }
 
   async mounted() {
     const r = await this.$apollo.query({
@@ -107,13 +107,13 @@ export default class PartnerProductCategoriesItems extends Vue {
     console.log(r);
     
 
-    if (r.data) {
-      this.categories = r.data.categories
-    }
+    // if (r.data) {
+    //   this.categories = r.data.categories
+    // }
 
-    this.$bus.$on('categories.reload', () => {
-      this.$apollo.queries.categories.refetch();
-    })
+    // this.$bus.$on('categories.reload', () => {
+    //   this.$apollo.queries.categories.refetch();
+    // })
   }
 }
 
