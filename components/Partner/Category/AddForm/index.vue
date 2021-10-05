@@ -53,7 +53,7 @@
               
               <div class="col-lg-12">
                 <a-form-item label="Trạng thái">
-                  <a-radio-group v-decorator="['is_active', { initialValue: false }]">
+                  <a-radio-group v-decorator="['is_active', { initialValue: true }]">
                     <a-radio :value="false">
                       Ẩn
                     </a-radio>
@@ -94,7 +94,6 @@ import fetchProductCategories from "@/gql/queries/fetchProductCategories.gql";
   apollo: {
     categories: {
       query: fetchProductCategories,
-      prefetch: true
     }
   }
 })

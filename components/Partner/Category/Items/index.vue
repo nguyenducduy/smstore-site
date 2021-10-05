@@ -55,8 +55,7 @@ import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
   },
   apollo: {
     categories: {
-      query: fetchCategories,
-      prefetch: true
+      query: fetchCategories
     }
   }
 })

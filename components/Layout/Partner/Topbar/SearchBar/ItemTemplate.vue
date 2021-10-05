@@ -22,6 +22,7 @@ export default {
 
 <style>
 em {
+  font-style: normal;
   color: #6c5ce7
 }
 </style>

@@ -93,7 +93,6 @@ import fetchProductCategory from "@/gql/queries/fetchProductCategory.gql";
   apollo: {
     categories: {
       query: fetchProductCategories,
-      prefetch: true
     }
   }
 })
