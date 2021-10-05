@@ -82,9 +82,6 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     publicPath: '/_smstore_site/',
-    vendor: [
-      'axios'
-    ],
     'html.minify': {
       collapseBooleanAttributes: true,
       decodeEntities: true,

@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" v-if="categories">
     <div class="col-lg-12">
       <a-button v-if="collapsed" size="small" type="link" @click.native="toggleCollapsed">
         Mở rộng
@@ -47,7 +47,6 @@ import EditableOrderNo from "@/components/Partner/Category/EditableOrderNo/index
 import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
 
 @Component({
-  name: "media-category-items",
   components: {
     ProductCategoryEditForm,
     ProductCategoryDeleteButton,
@@ -60,6 +59,7 @@ import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
   }
 })
 export default class PartnerProductCategoriesItems extends Vue {
+  categories: any = null
   collapsed: boolean = false;
 
   //table columns

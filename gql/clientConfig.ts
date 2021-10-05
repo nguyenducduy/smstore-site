@@ -57,6 +57,6 @@ export default function({
       }
     })]),
     wsEndpoint: NUXT_ENV_GRAPHQLWS_URI,
-    connectToDevTools: true
+    connectToDevTools: false
   } 
 }

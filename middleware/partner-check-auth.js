@@ -6,11 +6,8 @@ export default async function ({ app, store, redirect }) {
   if (!isAuth) {
     return redirect('/partner/login');
   }
-
-
-
   // check valid token
-  const user = store.getters['users/loggedUser'];
+  // const user = store.getters['users/loggedUser'];
   // console.log(user);
   
   // const r = await store.dispatch('users/fetchOne', user['sub']);
