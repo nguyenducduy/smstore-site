@@ -5,7 +5,7 @@
         <breadcrumbs :data="bc" />
       </div>
       <div class="col-lg-6">
-        <partner-product-category-add-form />
+        <!-- <partner-product-category-add-form /> -->
       </div>
     </div>
     <partner-product-category-items />
@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import Breadcrumbs from "@/components/Layout/Breadcrumbs/index.vue";
-import PartnerProductCategoryAddForm from "@/components/Partner/Category/AddForm/index.vue";
+// import PartnerProductCategoryAddForm from "@/components/Partner/Category/AddForm/index.vue";
 import PartnerProductCategoryItems from "@/components/Partner/Category/Items/index.vue";
 
 @Component({
@@ -23,7 +23,7 @@ import PartnerProductCategoryItems from "@/components/Partner/Category/Items/ind
   middleware: ['partner-check-auth'],
   components: {
     Breadcrumbs,
-    PartnerProductCategoryAddForm,
+    // PartnerProductCategoryAddForm,
     PartnerProductCategoryItems
   }
 })

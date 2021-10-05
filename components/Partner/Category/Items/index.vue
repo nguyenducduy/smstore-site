@@ -40,6 +40,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "nuxt-property-decorator";
+import { Getter } from 'vuex-class'
 // import ProductCategoryEditForm from "@/components/Partner/Category/EditForm/index.vue";
 // import ProductCategoryDeleteButton from "@/components/Partner/Category/DeleteButton/index.vue";
 // import EditableOrderNo from "@/components/Partner/Category/EditableOrderNo/index.vue";
@@ -54,6 +55,8 @@ import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
   }
 })
 export default class PartnerProductCategoriesItems extends Vue {
+  @Getter('users/shopId') shopId
+
   categories: any = null
   collapsed: boolean = false;
 
@@ -101,6 +104,8 @@ export default class PartnerProductCategoriesItems extends Vue {
   // }
 
   async mounted() {
+    console.log(this.shopId);
+    
     const r = await this.$apollo.query({
       query: fetchCategories
     })
