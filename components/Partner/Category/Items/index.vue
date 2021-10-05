@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from "nuxt-property-decorator";
-import ProductCategoryEditForm from "@/components/Partner/Category/EditForm/index.vue";
+// import ProductCategoryEditForm from "@/components/Partner/Category/EditForm/index.vue";
 import ProductCategoryDeleteButton from "@/components/Partner/Category/DeleteButton/index.vue";
 import EditableOrderNo from "@/components/Partner/Category/EditableOrderNo/index.vue";
 
@@ -48,7 +48,7 @@ import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
 
 @Component({
   components: {
-    ProductCategoryEditForm,
+    // ProductCategoryEditForm,
     ProductCategoryDeleteButton,
     EditableOrderNo
   }
