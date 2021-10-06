@@ -63,6 +63,7 @@ export default {
     { src: '@/plugins/tui-editor.js', mode: 'client' },
     { src: '@/plugins/vue-autocomplete.js', mode: 'client' },
     { src: '@/plugins/crisp.js', mode: 'client' },
+    { src: '@/plugins/vue-gtag.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -79,7 +80,6 @@ export default {
         'moment-duration-format'
       ]
     }],
-    '@nuxtjs/google-analytics'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -129,10 +129,6 @@ export default {
 
   tailwindcss: {
     jit: true
-  },
-
-  googleAnalytics: {
-    id: '288909598'
   },
 
   hooks: {
