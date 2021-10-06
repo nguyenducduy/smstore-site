@@ -62,6 +62,7 @@ export default {
     { src: '@/plugins/filepond.js', mode: 'client' },
     { src: '@/plugins/tui-editor.js', mode: 'client' },
     { src: '@/plugins/vue-autocomplete.js', mode: 'client' },
+    { src: '@/plugins/crisp.js', mode: 'client' },
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
