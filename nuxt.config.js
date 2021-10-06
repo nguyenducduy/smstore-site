@@ -132,7 +132,7 @@ export default {
   },
 
   googleAnalytics: {
-    id: 'G-FD0B1PN949'
+    id: '288909598'
   },
 
   hooks: {
