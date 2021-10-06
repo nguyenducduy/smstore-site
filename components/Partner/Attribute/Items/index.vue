@@ -63,11 +63,6 @@ import fetchProductTypes from "@/gql/queries/fetchProductTypes.gql";
     PartnerAttributeEditableName
     // Bulk,
     // UserFilterForm
-  },
-  apollo: {
-    types: {
-      query: fetchProductTypes
-    }
   }
 })
 export default class PartnerProductAttributeItems extends Vue {
@@ -148,20 +143,21 @@ export default class PartnerProductAttributeItems extends Vue {
     this.selectedRowKeys = selectedRowKeys;
   }
 
-  mounted() {
-    this.__reload();
+  async mounted() {
+    await this.__reload();
     
     // event hook
     this.$bus.$on('types.reload', () => {
-      this.__reload();
-      this.selectedRowKeys = [];
+      this.$apollo.queries.types.refetch();
     });
   }
 
   async __reload() {
-    this.loading = true;
-    await this.$apollo.queries.types.refetch();
-    this.loading = false;
+    const r = await this.$apollo.query({
+      query: fetchProductTypes
+    })
+
+    this.$apollo.addSmartQuery('types', { query: fetchProductTypes })
   }
 
 }

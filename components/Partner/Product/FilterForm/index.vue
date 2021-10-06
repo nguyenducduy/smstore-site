@@ -104,16 +104,10 @@ import fetchProductCategories from "@/gql/queries/fetchProductCategories.gql";
 // import searchMedia from "@/apollo/queries/searchMedia.gql";
 
 @Component({
-  apollo: {
-    categories: {
-      query: fetchProductCategories
-    },
-    // media_type: {
-    //   query: fetchMediaType
-    // },
-  }
+  
 })
 export default class PartnerProductFilterForm extends Vue {
+  categories: any = null
   form: any = {};
   loading: boolean = false;
   replaceFields: any = {
@@ -220,6 +214,8 @@ export default class PartnerProductFilterForm extends Vue {
   }
 
   async mounted() {
+    await this._reload()
+
     const { currentFilters, currentSearchText } = initQs(this);  
     
     this.form = this.$form.createForm(this, {
@@ -255,6 +251,16 @@ export default class PartnerProductFilterForm extends Vue {
         in_stock: currentFilters['in_stock']['_eq']
       })  
     }
+  }
+
+  async _reload() {
+    let r = null
+    r = await this.$apollo.query({
+      query: fetchProductCategories
+    })
+
+    this.$apollo.addSmartQuery('categories', { query: fetchProductCategories })
+    this.categories = r.data.categories
   }
 }
 </script>

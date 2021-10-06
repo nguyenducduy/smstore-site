@@ -89,13 +89,7 @@ import updateProductCategory from "@/gql/mutations/updateProductCategory.gql";
 import fetchProductCategories from "@/gql/queries/fetchProductCategories.gql";
 import fetchProductCategory from "@/gql/queries/fetchProductCategory.gql";
 
-@Component({
-  apollo: {
-    categories: {
-      query: fetchProductCategories,
-    }
-  }
-})
+@Component({})
 export default class PartnerProductCategoryEdit extends Vue {
   @Getter('users/shopId') shopId
   
@@ -153,7 +147,9 @@ export default class PartnerProductCategoryEdit extends Vue {
     this.form = this.$form.createForm(this);
   }
 
-  mounted() {
+  async mounted() {
+    await this._reload()
+    
     this.$bus.$on("categories.edit.show", async id => {
       try {
         const r = await this.$apollo.query({
@@ -187,6 +183,15 @@ export default class PartnerProductCategoryEdit extends Vue {
         
       }
     });
+  }
+
+  async _reload() {
+    const r = await this.$apollo.query({
+      query: fetchProductCategories
+    })
+
+    this.$apollo.addSmartQuery('categories', { query: fetchProductCategories })
+    this.categories = r.data.categories
   }
 }
 </script>

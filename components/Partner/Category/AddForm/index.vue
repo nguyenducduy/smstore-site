@@ -90,13 +90,7 @@ import { Getter } from 'vuex-class'
 import insertProductCategory from "@/gql/mutations/insertProductCategory.gql";
 import fetchProductCategories from "@/gql/queries/fetchProductCategories.gql";
 
-@Component({
-  apollo: {
-    categories: {
-      query: fetchProductCategories,
-    }
-  }
-})
+@Component({})
 export default class PartnerProductCategoryAddForm extends Vue {
   @Getter('users/shopId') shopId
   
@@ -161,6 +155,18 @@ export default class PartnerProductCategoryAddForm extends Vue {
 
   created() {
     this.form = this.$form.createForm(this);
+  }
+
+  async mounted() {
+    await this._reload()
+  }
+
+  async _reload() {
+    const r = await this.$apollo.query({
+      query: fetchProductCategories
+    })
+
+    this.categories = r.data.categories
   }
 }
 </script>

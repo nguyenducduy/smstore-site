@@ -243,14 +243,7 @@ import fetchProductTypes from '@/gql/queries/fetchProductTypes.gql'
 import fetchProduct from '@/gql/queries/fetchProduct.gql'
 
 @Component({
-  apollo: {
-    categories: {
-      query: fetchProductCategories,
-    },
-    types: {
-      query: fetchProductTypes,
-    }
-  }
+  
 })
 export default class PartnerProductEditForm extends Vue {
   @Getter('users/shopId') shopId
@@ -472,7 +465,7 @@ export default class PartnerProductEditForm extends Vue {
   }
 
   async mounted() {
-    console.log('a');
+    await this._reload()
     
     const r = await this.$apollo.query({
       query: fetchProduct,
@@ -535,6 +528,23 @@ export default class PartnerProductEditForm extends Vue {
       
       self.$refs.editor.invoke('setHTML', self.product.description)
     })
+  }
+
+  async _reload() {
+    let r = null
+    r = await this.$apollo.query({
+      query: fetchProductCategories
+    })
+
+    this.$apollo.addSmartQuery('categories', { query: fetchProductCategories })
+    this.categories = r.data.categories
+
+    r = await this.$apollo.query({
+      query: fetchProductTypes
+    })
+
+    this.$apollo.addSmartQuery('types', { query: fetchProductTypes })
+    this.types = r.data.types
   }
 }
 </script>

@@ -9,7 +9,7 @@
         Thu gọn
         <a-icon type="caret-up" />
       </a-button>
-      <!-- <zk-table
+      <zk-table
         :data="categories"
         :columns="columns"
         index-text="#"
@@ -32,26 +32,26 @@
           >Sửa</a-button>
           <product-category-delete-button :id="scope.row.id" />
         </template>
-      </zk-table> -->
+      </zk-table>
     </div>
-    <!-- <product-category-edit-form /> -->
+    <product-category-edit-form />
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Watch } from "nuxt-property-decorator";
 import { Getter } from 'vuex-class'
-// import ProductCategoryEditForm from "@/components/Partner/Category/EditForm/index.vue";
-// import ProductCategoryDeleteButton from "@/components/Partner/Category/DeleteButton/index.vue";
-// import EditableOrderNo from "@/components/Partner/Category/EditableOrderNo/index.vue";
+import ProductCategoryEditForm from "@/components/Partner/Category/EditForm/index.vue";
+import ProductCategoryDeleteButton from "@/components/Partner/Category/DeleteButton/index.vue";
+import EditableOrderNo from "@/components/Partner/Category/EditableOrderNo/index.vue";
 
-import fetchCategories from "@/gql/queries/fetchProductCategories.gql";
+import fetchProductCategories from "@/gql/queries/fetchProductCategories.gql";
 
 @Component({
   components: {
-    // ProductCategoryEditForm,
-    // ProductCategoryDeleteButton,
-    // EditableOrderNo
+    ProductCategoryEditForm,
+    ProductCategoryDeleteButton,
+    EditableOrderNo
   }
 })
 export default class PartnerProductCategoriesItems extends Vue {
@@ -104,21 +104,20 @@ export default class PartnerProductCategoriesItems extends Vue {
   // }
 
   async mounted() {
-    console.log(this.shopId);
+    await this._reload()
     
-    const r = await this.$apollo.query({
-      query: fetchCategories
+    this.$bus.$on('categories.reload', () => {
+      this.$apollo.queries.categories.refetch();
     })
-    console.log(r);
-    
+  }
 
-    // if (r.data) {
-    //   this.categories = r.data.categories
-    // }
+  async _reload() {
+    const r = await this.$apollo.query({
+      query: fetchProductCategories
+    })
 
-    // this.$bus.$on('categories.reload', () => {
-    //   this.$apollo.queries.categories.refetch();
-    // })
+    this.$apollo.addSmartQuery('categories', { query: fetchProductCategories })
+    this.categories = r.data.categories
   }
 }
 

@@ -231,14 +231,7 @@ import fetchProductTypes from '@/gql/queries/fetchProductTypes.gql'
 import fetchProduct from '@/gql/queries/fetchProduct.gql'
 
 @Component({
-  apollo: {
-    categories: {
-      query: fetchProductCategories,
-    },
-    types: {
-      query: fetchProductTypes,
-    }
-  }
+  
 })
 export default class PartnerProductCloneForm extends Vue {
   @Getter('users/shopId') shopId
@@ -433,6 +426,8 @@ export default class PartnerProductCloneForm extends Vue {
   }
 
   async mounted() {
+    await this._reload()
+    
     const r = await this.$apollo.query({
       query: fetchProduct,
       variables: { id: this.$route.params.id },
@@ -484,6 +479,23 @@ export default class PartnerProductCloneForm extends Vue {
         attrs: attrs
       })
     })
+  }
+
+  async _reload() {
+    let r = null
+    r = await this.$apollo.query({
+      query: fetchProductCategories
+    })
+
+    this.$apollo.addSmartQuery('categories', { query: fetchProductCategories })
+    this.categories = r.data.categories
+
+    r = await this.$apollo.query({
+      query: fetchProductTypes
+    })
+
+    this.$apollo.addSmartQuery('types', { query: fetchProductTypes })
+    this.types = r.data.types
   }
 }
 </script>
