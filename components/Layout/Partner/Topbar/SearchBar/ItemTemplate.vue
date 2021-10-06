@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="px-4">
     <nuxt-link :to="`/partner/product/edit/${item.id}`">
       <span v-html="item._formatted.name"></span>
     </nuxt-link>

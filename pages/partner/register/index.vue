@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen pt-24 pb-5 font-sans antialiased bg-black">
-    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-1/4 sm:m-auto lg:w-1/4">
+    <div class="flex flex-col justify-center mx-5 mb-5 space-y-8 sm:w-1/2 sm:m-auto lg:w-1/3 xl:w-1/3 md:w-1/2">
       <h1 class="text-4xl font-bold text-center text-yellow-300">Tiệm của tui<span class="text-blue-500"> Partner</span></h1>
         <div class="flex flex-col p-10 space-y-6 bg-white rounded-lg shadow">
           <h1 class="text-xl font-bold text-center">Tạo tài khoản</h1>
@@ -8,7 +8,7 @@
             Vui lòng điền đầy đủ thông tin để chúng tôi dễ dàng hỗ trợ bạn cài đặt và sử dụng hệ thống hiệu quả nhất.
           </p>
           <a-alert v-if="isOke"  message="Cảm ơn bạn đã đăng ký, chúng tôi đã gửi đường dẫn kích hoạt vào hộp mail của bạn. Vui lòng truy cập hộp mail và nhấn vào nút Kích hoạt. Mã kích hoạt chỉ có hiệu lực trong ngày." type="success" />
-          <a-form v-else :form="form" @submit="onSubmit" :layout="formLayout">
+          <a-form v-else :form="form" @submit="onSubmit" :layout="formLayout" type="vertical">
             <a-form-item label="Họ và tên" 
               :label-col="formItemLayout.labelCol"
               :wrapper-col="formItemLayout.wrapperCol"

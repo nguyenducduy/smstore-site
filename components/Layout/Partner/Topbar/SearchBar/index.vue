@@ -63,10 +63,11 @@ export default class SearchBar extends Vue {
 
 <style lang="scss">
 .v-autocomplete-list {
+  width: 500px;
   z-index: 999;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
-  padding: 0.6rem;
+  // padding: 0.6rem;
 }
 </style>

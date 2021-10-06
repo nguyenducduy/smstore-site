@@ -2,7 +2,7 @@ export default ({ store }) => {
   window.$crisp = [];
   window.CRISP_WEBSITE_ID = "a55ad37e-a5e5-4f53-85d8-f01295f731ac";
 
-  if (typeof store.state.users.loggedUser !== 'undefined') {
+  if (store.state.users.loggedUser !== null) {
     const user = store.state.users.loggedUser
     window.$crisp.push(["set", "user:nickname", [`${user.sub}:${user.full_name}`]]);
   }

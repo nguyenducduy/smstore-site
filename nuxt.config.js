@@ -79,6 +79,7 @@ export default {
         'moment-duration-format'
       ]
     }],
+    '@nuxtjs/google-analytics'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -128,6 +129,10 @@ export default {
 
   tailwindcss: {
     jit: true
+  },
+
+  googleAnalytics: {
+    id: 'G-FD0B1PN949'
   },
 
   hooks: {

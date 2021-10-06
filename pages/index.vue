@@ -64,6 +64,29 @@ import { Component, Vue } from 'nuxt-property-decorator'
 
 @Component({
   layout: 'default',
+  head() {
+    return {
+      title: 'Tạo website bán hàng miễn phí',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Tạo website bán hàng miễn phí một cách đơn giản nhất cho tất cả mọi người'
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: 'website bán hàng, website bán hàng miễn phí, tạo website bán hàng, tạo website bán hàng miễn phí, website free, web bán hàng free'
+        },
+        {
+          hid: 'og:image',
+          name: 'og:image',
+          content: 'https://tct.sgp1.digitaloceanspaces.com/web/tiemcuatui_land.png'
+        },
+      ]
+    };
+  }
+
 })
 export default class HomePage extends Vue {
   mounted() {
