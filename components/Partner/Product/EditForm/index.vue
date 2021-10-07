@@ -344,8 +344,6 @@ export default class PartnerProductEditForm extends Vue {
             return this.$message.warning(`Vui lòng nhập giá trị cho tùy chọn ${option['name']}`)
           }
         })
-
-        this.loading = true;
         
         try {  
           let productItem = {
@@ -358,11 +356,11 @@ export default class PartnerProductEditForm extends Vue {
             in_stock: values.in_stock,
             price: values.price,
             sku: values.sku,
-            type_id: this.types[this.type_selected]['id']
           }
 
           let attrs = []
-          if (values.attrs.length > 0) {
+          if (typeof values.attrs !== 'undefined') {
+            productItem['type_id'] = this.types[this.type_selected]['id']
             values.attrs.map((attr_value, attr_id) => {
               attrs.push({
                 attribute_id: attr_id,
@@ -371,8 +369,12 @@ export default class PartnerProductEditForm extends Vue {
                 value: typeof attr_value !== 'undefined' ? attr_value : ''
               })
             })
+          } else {
+            return this.$message.warning(`Vui lòng nhập Thuộc tính sản phẩm`)
           }
 
+          this.loading = true;
+          
           // diff to remove image from user old images
           if (this.myFiles.length !== this.product.images.length) {
             const diff = this.product.images.filter(({ id: id1 }) => !this.myFiles.some(({ id: id2 }) => id2 === id1))
@@ -451,7 +453,7 @@ export default class PartnerProductEditForm extends Vue {
               this.myFiles.push(image)
             });
           }
-
+          this.$bus.$emit('products.reload')
           this.$message.success(`Cập nhật sản phẩm "${values.name}" thành công`);
         } catch (error) {
           this.loading = false;

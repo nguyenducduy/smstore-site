@@ -62,7 +62,7 @@ export default {
     { src: '@/plugins/filepond.js', mode: 'client' },
     { src: '@/plugins/tui-editor.js', mode: 'client' },
     { src: '@/plugins/vue-autocomplete.js', mode: 'client' },
-    { src: '@/plugins/crisp.js', mode: 'client' },
+    { src: '@/plugins/vue-crisp.js', mode: 'client' },
     { src: '@/plugins/vue-gtag.js', mode: 'client' },
   ],
 

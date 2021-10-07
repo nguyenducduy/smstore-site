@@ -330,8 +330,6 @@ export default class PartnerProductCloneForm extends Vue {
             return this.$message.warning(`Vui lòng nhập giá trị cho tùy chọn ${option['name']}`)
           }
         })
-
-        this.loading = true;
         
         try {  
           let productItem = {
@@ -345,10 +343,10 @@ export default class PartnerProductCloneForm extends Vue {
             in_stock: values.in_stock,
             price: values.price,
             sku: values.sku,
-            type_id: this.types[this.type_selected]['id']
           }
 
-          if (values.attrs.length > 0) {
+          if (typeof values.attrs !== 'undefined') {
+            productItem['type_id'] = this.types[this.type_selected]['id']
             productItem['product_attributes'] = {
               data: []
             }
@@ -360,7 +358,11 @@ export default class PartnerProductCloneForm extends Vue {
                 value: typeof attr_value !== 'undefined' ? attr_value : ''
               })
             })
+          } else {
+            return this.$message.warning(`Vui lòng nhập Thuộc tính sản phẩm`)
           }
+
+          this.loading = true;
 
           // upload files
           const files = await this.$refs.pond.getFiles()
@@ -403,8 +405,7 @@ export default class PartnerProductCloneForm extends Vue {
             mutation: insertProduct,
             variables: {
               object: productItem
-            },
-            refetchQueries: () => ['products']
+            }
           });
 
           this.loading = false;
@@ -414,6 +415,7 @@ export default class PartnerProductCloneForm extends Vue {
             name: `${this.product.name} (Nhân bản ${this.cloneIndex+=1})`
           })
           await this.$refs.pond.removeFiles()
+          this.$bus.$emit('products.reload')
         } catch (error) {
           this.loading = false;
         }

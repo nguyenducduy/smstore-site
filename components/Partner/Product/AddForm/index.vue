@@ -167,7 +167,11 @@
                 <span>Thuộc tính</span>
               </h1>
             </a-form-item>
-            <a-form-item label="Chọn loại SP">
+            <div v-if="types === null || types.length === 0">
+              <a-alert class="mb-4" type="error" message="Vui lòng vào Sản phẩm > Thuộc tính để tạo Loại sản phẩm và Thuộc tính" banner/>
+                <br/>
+            </div>
+            <a-form-item label="Chọn loại SP" v-if="types && types.length > 0">
               <a-select @change="onSelectType" v-model="type_selected">
                 <a-select-option :value="i" v-for="type, i in types" :key="i">
                   {{ type.name }}
@@ -311,9 +315,7 @@ export default class PartnerProductAddForm extends Vue {
     e.preventDefault();
     
     this.form.validateFields(async (err, values) => {
-      this.loading = true
-
-      if (!err) {
+      if (!err) {        
         this.options.map(option => {
           if (option['values'].length > 0) {
             option['values'].map(value => {
@@ -325,8 +327,6 @@ export default class PartnerProductAddForm extends Vue {
             return this.$message.warning(`Vui lòng nhập giá trị cho tùy chọn ${option['name']}`)
           }
         })
-
-        this.loading = true;
         
         try {  
           let productItem = {
@@ -340,10 +340,10 @@ export default class PartnerProductAddForm extends Vue {
             in_stock: values.in_stock,
             price: values.price,
             sku: values.sku,
-            type_id: this.types[this.type_selected]['id']
           }
-
-          if (values.attrs.length > 0) {
+          
+          if (typeof values.attrs !== 'undefined') {
+            productItem['type_id'] = this.types[this.type_selected]['id']
             productItem['product_attributes'] = {
               data: []
             }
@@ -355,7 +355,11 @@ export default class PartnerProductAddForm extends Vue {
                 value: typeof attr_value !== 'undefined' ? attr_value : ''
               })
             })
+          } else {
+            return this.$message.warning(`Vui lòng nhập Thuộc tính sản phẩm`)
           }
+
+          this.loading = true;
 
           // upload files
           const files = await this.$refs.pond.getFiles()
@@ -401,10 +405,10 @@ export default class PartnerProductAddForm extends Vue {
             }
           });
 
-          this.loading = false;
-
           await this.$refs.pond.removeFiles()
           this.$message.success(`Sản phẩm "${values.name}" đã được thêm`)
+          this.$bus.$emit('products.reload')
+          this.loading = false;
         } catch (error) {
           this.loading = false;
         }

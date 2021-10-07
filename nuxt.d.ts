@@ -27,6 +27,7 @@ declare module "vue/types/vue" {
     ls: WebStorage;
     $helper: any;
     $moment: any;
+    $crisp: any;
   }
 
   interface Vue {
@@ -44,5 +45,6 @@ declare module "vue/types/vue" {
     ls: WebStorage;
     $helper: any;
     $moment: any;
+    $crisp: any;
   }
 }

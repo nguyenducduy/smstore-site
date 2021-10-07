@@ -92,8 +92,8 @@ export default class HomePage extends Vue {
   mounted() {
     if (process.client) {
       window.scrollTo({ top: 0 })
+      this.$crisp.load()
     }
-    
   }
 }
 </script>
