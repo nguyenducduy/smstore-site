@@ -175,10 +175,10 @@ export default class PartnerSettingEditForm extends Vue {
       if (!err) {
         this.loading = true;
         
-        let logoPath = null
+        let logoPath = this.shop.logo_path
+
         try {  
           // upload files
-          
           const files = await this.$refs.pond.getFiles()
           
           let formData = new FormData();
@@ -207,34 +207,47 @@ export default class PartnerSettingEditForm extends Vue {
               logoPath = response.data[0]
             }
           }
-
-          await this.$apollo.mutate({
-            mutation: updateStore,
-            variables: {
-              id: this.shop.id,
-              object: {
-                screen_name: values.screen_name,
-                description: values.description,
-                email: values.email,
-                phone_number: values.phone_number,
-                address: values.address,
-                logo_path: logoPath
-              }
-            }
-          });
-
-          this.loading = false;
-          
-          await this.$refs.pond.removeFiles()
-
-          // reload images
-          this.myFiles = []
-          this.myFiles.push(logoPath)
-
-          this.$message.success(`Cập nhật cửa hàng "${values.screen_name}" thành công`);
         } catch (error) {
           this.loading = false;
         }
+
+        await this.$apollo.mutate({
+          mutation: updateStore,
+          variables: {
+            id: this.shop.id,
+            object: {
+              screen_name: values.screen_name,
+              description: values.description,
+              email: values.email,
+              phone_number: values.phone_number,
+              address: values.address,
+              logo_path: logoPath
+            }
+          }
+        });
+
+        this.loading = false;
+        
+        await this.$refs.pond.removeFiles()
+
+        // reload images
+        this.myFiles = []
+        if (logoPath !== null) {
+          this.myFiles.push(logoPath)
+        }
+
+        // delete old file
+        if (logoPath !== this.shop.logo_path) {
+          await this.$axios.post(
+            `${this.$config.NUXT_ENV_STORAGE_ENDPOINT}/logos/delete`,
+            {
+              id: this.shopId,
+              path: this.shop.logo_path
+            }
+          )
+        }
+
+        this.$message.success(`Cập nhật cửa hàng "${values.screen_name}" thành công`);
       }
     });
   }
@@ -285,9 +298,7 @@ export default class PartnerSettingEditForm extends Vue {
 </script>
 
 <style lang="scss">
-.filepond--item {
-    width: calc(25% - 0.5em);
-}
+
 .ant-card-grid {
   box-shadow: none !important;
 }

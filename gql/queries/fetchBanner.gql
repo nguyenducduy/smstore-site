@@ -1,0 +1,9 @@
+query fetchBanner($id: Int!) {
+  banners_by_pk(id: $id) {
+    id
+    page
+    link
+    is_active
+    image_path
+  }
+}

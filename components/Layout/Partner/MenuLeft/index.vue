@@ -1,8 +1,12 @@
 <template>
   <div>
     <div :class="$style.logo" v-if="loggedShop">
-      <div :class="$style.logoContainer">
-        <img :src="`${$helper.getImage(loggedShop.logo_path)}`" @click="$router.push('/partner')" />
+      <div class="w-16 mx-auto my-2">
+        <img
+          class="object-cover object-fit"
+          :src="`${$helper.getImage(loggedShop.logo_path)}`"
+          @click="$router.push('/partner')"
+        />
       </div>
     </div>
     <div :class="[$style.navigation, $style.light]">
@@ -138,7 +142,7 @@ export default class MenuLeft extends Vue {
       },
       {
         id: '6',
-        name: 'Đánh giá & Nhận xét',
+        name: 'Đánh giá SP',
         path: '/partner/review',
         icon: 'fa fa-comments'
       },

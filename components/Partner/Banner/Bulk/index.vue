@@ -24,7 +24,7 @@
         <a-icon type="warning" class="m-r-5" />Bạn có chắc muốn 
         <strong>
           {{ actions.filter(item => item["action"] === action)[0]["label"] }}
-        </strong> những sản phẩm có ID sau?
+        </strong> những banner có ID sau?
       </template>
       <ul style="list-style: circle;">
         <li v-for="id in selectedItems" :key="id">{{ id }}</li>
@@ -35,15 +35,17 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import updateFieldProduct from "@/gql/mutations/updateFieldProduct.gql";
-import deleteProduct from "@/gql/mutations/deleteProduct.gql";
-import fetchProductImages from '@/gql/queries/fetchProductImages.gql'
+import { Getter } from 'vuex-class'
+import updateFieldBanner from "@/gql/mutations/updateFieldBanner.gql";
+import deleteBanner from "@/gql/mutations/deleteBanner.gql";
+import fetchBanner from "@/gql/queries/fetchBanner.gql";
 
 @Component({})
-export default class ProductSubmitBulk extends Vue {
+export default class BannerSubmitBulk extends Vue {
   @Prop() actions: any;
   @Prop() selectedItems: any;
   @Prop() displaySelectedField;
+  @Getter('users/shopId') shopId
 
   action: string = "";
   confirmVisible: boolean = false;
@@ -79,49 +81,48 @@ export default class ProductSubmitBulk extends Vue {
         }
 
         const r = await this.$apollo.mutate({
-          mutation: updateFieldProduct,
+          mutation: updateFieldBanner,
           variables: {
             id: id,
             fields: fields
           }
         });
 
-        if (r['data'] && r['data']['update_products']['affected_rows'] > 0) {
+        if (r['data'] && r['data']['update_banners']['affected_rows'] > 0) {
           this.$message.success('Cập nhật trạng thái ' + this.action + ' cho ID: ' + id + ' thành công');
-          this.$bus.$emit('products.reload');
+          this.$bus.$emit('banners.reload');
         }
       } else {
-        const r1 = await this.$apollo.query({
-          query: fetchProductImages,
+        let r: any = null
+
+        r = await this.$apollo.query({
+          query: fetchBanner,
           variables: {
-            where: {
-              product_id: { _eq: id }
-            }
+            id: id
           }
         })
+
+        const banner = r.data.banners_by_pk
         
-        const r = await this.$apollo.mutate({
-          mutation: deleteProduct,
+        r = await this.$apollo.mutate({
+          mutation: deleteBanner,
           variables: {
             id: id
           }
         });
 
-        if (r['data'] && r['data']['delete_products']['affected_rows'] > 0) {
-          if (r1.data.images.length > 0) {
-            r1.data.images.map(async image => {
-              await this.$axios.post(
-                `${this.$config.NUXT_ENV_STORAGE_ENDPOINT}/products/delete`,
-                {
-                  id: image.id,
-                  path: image.path
-                }
-              )
-            })
-          }
+        if (r['data'] && r['data']['delete_banners']['affected_rows'] > 0) {
+          // delete banner image
+          await this.$axios.post(
+            `${this.$config.NUXT_ENV_STORAGE_ENDPOINT}/banners/delete`,
+            {
+              id: this.shopId,
+              path: banner.image_path
+            }
+          )
           
-          this.$message.success('Xóa ID: ' + id + ' thành công');
-          this.$bus.$emit('products.reload');
+          this.$message.success('Xóa banner ID: ' + id + ' thành công');
+          this.$bus.$emit('banners.reload');
         }
       }
     });

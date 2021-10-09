@@ -1,5 +1,5 @@
-mutation deleteProduct($id: Int!) {
-  delete_products(
+mutation deleteBanner($id: Int!) {
+  delete_banners(
     where: { id: { _eq: $id } }
   ) {
     affected_rows

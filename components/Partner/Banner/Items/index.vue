@@ -7,7 +7,7 @@
             <a-icon type="filter" /> &nbsp; Bộ lọc
           </span>
         </p>
-        <products-filter-form />
+        <banners-filter-form />
       </div>
       <div class="col-lg-10">
         <div class="row">
@@ -29,7 +29,7 @@
           </div>
           <div class="mb-4 text-right col-lg-6" style="line-height: 30px">
             <a-pagination
-              v-show="products_aggregate"
+              v-show="banners_aggregate"
               size="small"
               :total="total"
               :current="currentPage"
@@ -52,7 +52,7 @@
             <a-table
               size="small"
               class="box-white"
-              :dataSource="products"
+              :dataSource="banners"
               :columns="columns"
               :pagination="false"
               :rowKey="record => record.id"
@@ -62,43 +62,23 @@
                 onChange: onSelectChange
               }"
             >
-              <template slot="_images" slot-scope="record">
-                <img v-if="record.images && record.images.length > 0" :data-src="$helper.getImage(record.images[0]['path'])" />
+              <template slot="_image" slot-scope="record">
+                <img :data-src="$helper.getImage(record.image_path)" />
+                <small>{{ record.link }}</small>
               </template>
-              <template slot="_name" slot-scope="record">
-                <small>{{ record.category.name }}</small>
-                <br/>
-                <nuxt-link
-                  class="text-xl"
-                  :to="`/partner/product/edit/${record.id}`">
-                  {{ record.name }}
-                </nuxt-link>
-                <a-space>
-                  <small>#{{ record.sku }}</small>
-                </a-space>
-                <br/>
-                <a-space class="pt-2" v-if="record.options.length > 0">
-                  <i class="fa fa-clone"></i>
-                  {{ record.options.length }} tùy chọn
-                </a-space>
-              </template>
-              <template slot="_price" slot-scope="record">
-                <span class="font-mono text-xl">{{ record.price | number('0,0') }}</span>
-                &#8363;
-              </template>
-              <template slot="_inStock" slot-scope="record">
-                <a-tag color="green" v-if="record.in_stock">
-                  Còn hàng
+              <template slot="_page" slot-scope="record">
+                <a-tag v-if="record.page === 'home'">
+                  Trang chủ
                 </a-tag>
-                <a-tag v-else>
-                  Hết hàng
+                <a-tag v-if="record.page === 'category'">
+                  Trang danh mục
+                </a-tag>
+                <a-tag v-if="record.page === 'detail'">
+                  Trang chi tiết sản phẩm
                 </a-tag>
               </template>
               <template slot="_orderNo" slot-scope="record">
                 <editable-order-no :id="record.id" :text="record.order_no" size="small" width="50" />
-              </template>
-              <template slot="_category" slot-scope="record">
-                {{ record.category.name }}
               </template>
               <template slot="_isActive" slot-scope="record">
                 <a-tag color="green" v-if="record.is_active">
@@ -110,16 +90,11 @@
               </template>
               <template slot="_actions" slot-scope="record">
                 <a-button
-                  type="dashed"
-                  icon="copy"
-                  @click="$router.push(`/partner/product/clone/${record.id}`)"
-                >Nhân bản</a-button>
-                <a-button
                   type="link"
                   icon="edit"
                   @click="$router.push(`/partner/product/edit/${record.id}`)"
                 >Sửa</a-button>
-                <delete-button :id="record.id" />
+                <delete-button :id="record.id" :imagePath="record.image_path" />
               </template>
             </a-table>
           </div>
@@ -127,12 +102,11 @@
             <bulk
               :actions="bulkActions"
               :selectedItems="selectedRowKeys"
-              displaySelectedField="title"
             />
           </div>
           <div class="mt-4 text-right col-lg-6">
             <a-pagination
-              v-show="products_aggregate && filterable === false"
+              v-show="banners_aggregate && filterable === false"
               size="small"
               :total="total"
               :current="currentPage"
@@ -159,32 +133,32 @@
 import { Vue, Component, Watch } from "nuxt-property-decorator";
 import { Getter, Mutation } from 'vuex-class'
 import { getOrderBy, getFilterBy, initQs, createUrl } from "@/helper/paginate";
-import DeleteButton from "@/components/Partner/Product/DeleteButton/index.vue";
-import Bulk from "@/components/Partner/Product/Bulk/index.vue";
-import EditableOrderNo from "@/components/Partner/Product/EditableOrderNo/index.vue";
-import ProductsFilterForm from "@/components/Partner/Product/FilterForm/index.vue";
+import DeleteButton from "@/components/Partner/Banner/DeleteButton/index.vue";
+import Bulk from "@/components/Partner/Banner/Bulk/index.vue";
+import EditableOrderNo from "@/components/Partner/Banner/EditableOrderNo/index.vue";
+import BannersFilterForm from "@/components/Partner/Banner/FilterForm/index.vue";
 
-import fetchProducts from "@/gql/queries/fetchProducts.gql";
-import countProducts from "@/gql/queries/countProducts.gql";
+import fetchBanners from "@/gql/queries/fetchBanners.gql";
+import countBanners from "@/gql/queries/countBanners.gql";
 
 @Component({
   components: {
     DeleteButton,
     Bulk,
     EditableOrderNo,
-    ProductsFilterForm
+    BannersFilterForm
   }
 })
-export default class PartnerProductItems extends Vue {
-  @Getter('products/pageSize') pageSize
-  @Mutation('products/SET_PAGE_SIZE') setPageSize
-  @Watch('products_aggregate')
-  onProductsAggregateChange() {
-    this.$bus.$emit('bc.total', this.products_aggregate.aggregate.count); 
+export default class PartnerBannerItems extends Vue {
+  @Getter('banners/pageSize') pageSize
+  @Mutation('banners/SET_PAGE_SIZE') setPageSize
+  @Watch('banners_aggregate')
+  onAggregateChange() {
+    this.$bus.$emit('bc.total', this.banners_aggregate.aggregate.count); 
   }
 
-  products: any = null;
-  products_aggregate: any = null;
+  banners: any = null;
+  banners_aggregate: any = null;
 
   // items per page
   pageSizeOptions: any = ['10', '20', '30', '40']
@@ -212,8 +186,8 @@ export default class PartnerProductItems extends Vue {
   ];
 
   get total() {
-    if (this.products_aggregate) {
-      return this.products_aggregate.aggregate.count;
+    if (this.banners_aggregate) {
+      return this.banners_aggregate.aggregate.count;
     } else {
       return 0;
     }
@@ -237,16 +211,12 @@ export default class PartnerProductItems extends Vue {
         sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
       },
       {
-        scopedSlots: { customRender: "_images" },
-        width: 100,
+        scopedSlots: { customRender: "_image" },
+        width: 300,
       },
       {
-        title: "Tên SP",
-        scopedSlots: { customRender: "_name" }
-      },
-      {
-        title: "Giá",
-        scopedSlots: { customRender: "_price" }
+        title: "Trang",
+        scopedSlots: { customRender: "_page" }
       },
       {
         title: "Thứ tự",
@@ -265,12 +235,6 @@ export default class PartnerProductItems extends Vue {
         sorter: true,
         sortOrder: sortedInfo.columnKey === "is_published" && sortedInfo.order,
       },
-      {
-        title: "Còn hàng?",
-        scopedSlots: { customRender: "_inStock" },
-        key: "in_stock",
-      },
-      
       {
         align: "right",
         scopedSlots: { customRender: "_actions" }
@@ -313,34 +277,17 @@ export default class PartnerProductItems extends Vue {
     );
   }
 
-  mounted() {    
+  async mounted() {    
     const { page } = this.$route.query;
     this.currentPage = typeof page !== "undefined" ? +page : 1;
 
-    this.__reload();
+    await this.__reload();
     
     // event hook
-    this.$bus.$on('products.reload', () => {
+    this.$bus.$on('banners.reload', () => {
       this.__reload();
       this.selectedRowKeys = [];
     });
-  }
-
-  // re-arsange search result
-  __reOrder(searchStr) {
-    let reOrder = [];
-
-    if (typeof searchStr !== 'undefined') {
-      searchStr.split(',').map(id => {
-        const existedItem = this.products.find(x => x.id === parseInt(id));
-
-        if (typeof existedItem !== 'undefined') {
-          reOrder.push(this.products.find(x => x.id === parseInt(id)));
-        }
-      });
-
-      this.products = reOrder;
-    }
   }
 
   async __reload() {
@@ -365,29 +312,33 @@ export default class PartnerProductItems extends Vue {
     this.sortedInfo = currentSort;
     this.q = currentSearchText;
 
-    if (this.products === null && this.products_aggregate === null) {
-      const r1 = await this.$apollo.query({
-        query: fetchProducts,
+    if (this.banners === null && this.banners_aggregate === null) {
+      
+      
+      let r = null
+
+      r = await this.$apollo.query({
+        query: fetchBanners,
         variables: variables,
       })
-      this.products = r1.data.products
+      this.banners = r.data.banners
 
-      const r2 = await this.$apollo.query({
-        query: countProducts,
+      r = await this.$apollo.query({
+        query: countBanners,
         variables: {
           where: {
             _and: getFilterBy(this)
           }
         },
       })
-      this.products_aggregate = r2.data.products_aggregate
+      this.banners_aggregate = r.data.banners_aggregate
 
-      this.$apollo.addSmartQuery('products', {
-        query: fetchProducts,
+      this.$apollo.addSmartQuery('banners', {
+        query: fetchBanners,
         variables: variables
       })
-      this.$apollo.addSmartQuery('products_aggregate', {
-        query: countProducts,
+      this.$apollo.addSmartQuery('banners_aggregate', {
+        query: countBanners,
         variables: {
           where: {
             _and: getFilterBy(this)
@@ -395,17 +346,12 @@ export default class PartnerProductItems extends Vue {
         }
       })
     } else {
-      await this.$apollo.queries.products.refetch(variables);
-      await this.$apollo.queries.products_aggregate.refetch({
+      await this.$apollo.queries.banners.refetch(variables);
+      await this.$apollo.queries.banners_aggregate.refetch({
         where: {
           _and: getFilterBy(this)
         }
       });
-    }
-
-    // must re-arrange because graphql return not match order of search engine
-    if (currentSearchText.length > 0) {
-      this.__reOrder(currentSearchResult)
     }
 
     this.loading = false;

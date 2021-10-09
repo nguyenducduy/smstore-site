@@ -23,10 +23,10 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-import updateFieldProduct from "@/gql/mutations/updateFieldProduct.gql";
+import updateFieldBanner from "@/gql/mutations/updateFieldBanner.gql";
 
 @Component({})
-export default class ProductEditableOrderNo extends Vue {
+export default class BannerEditableOrderNo extends Vue {
   @Prop() id: number;
   @Prop() text: string;
   @Prop() size: string;
@@ -53,14 +53,14 @@ export default class ProductEditableOrderNo extends Vue {
     this.editable = false;
 
     const r = await this.$apollo.mutate({
-      mutation: updateFieldProduct,
+      mutation: updateFieldBanner,
       variables: {
         id: this.id,
         fields: { "order_no": +this.value }
       }
     });
 
-    if (r['data'] && r['data']['update_products']['affected_rows'] > 0) {
+    if (r['data'] && r['data']['update_banners']['affected_rows'] > 0) {
       this.$message.success('Cập nhật thứ tự hiển thị thành công');
       this.$emit("change", this.value);
     } else {

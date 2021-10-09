@@ -1,0 +1,10 @@
+mutation insertBanner(
+  $object: banners_insert_input!
+) {
+  insert_banners_one(
+    object: $object
+  ) {
+    id
+  }
+}
+

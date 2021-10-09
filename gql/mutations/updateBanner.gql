@@ -1,0 +1,13 @@
+mutation updateBanner(
+  $id: Int!
+  $banner: banners_set_input
+) {
+  update_banners(
+    where: {
+      id: { _eq: $id }
+    },
+    _set: $banner
+  ) {
+    affected_rows
+  }
+}

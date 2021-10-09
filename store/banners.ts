@@ -7,8 +7,8 @@ export const state = () => ({
 export const mutations = {
   SET_PAGE_SIZE(state, pageSize) {
     state.pageSize = pageSize
-    Vue.ls.set('products.pageSize', pageSize);
-    this.$cookiz.set('products.pageSize', pageSize);
+    Vue.ls.set('banners.pageSize', pageSize);
+    this.$cookiz.set('banners.pageSize', pageSize);
   }
 }
 

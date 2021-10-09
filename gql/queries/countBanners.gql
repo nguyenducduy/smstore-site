@@ -1,0 +1,11 @@
+query countBanners(
+  $where: banners_bool_exp
+) {
+  banners_aggregate(
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

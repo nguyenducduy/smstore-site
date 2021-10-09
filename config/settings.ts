@@ -46,6 +46,13 @@ export default {
     useCommandShortcut: true,
     usageStatistics: false,
     hideModeSwitch: false,
-  }
+  },
+
+  // banner page
+  bannerPages: [
+    { value: 'home', name: 'Trang chủ' },
+    { value: 'category', name: 'Trang danh mục' },
+    { value: 'detail', name: 'Trang chi tiết sản phẩm' },
+  ]
 };
   

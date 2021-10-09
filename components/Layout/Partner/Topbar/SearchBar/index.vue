@@ -49,14 +49,18 @@ export default class SearchBar extends Vue {
   }
 
   async onSearch(q) {
-    const index = this.searchClient.index(this.index)
-    const r = await index.search(q, {
-      attributesToHighlight: ['*'],
-    })
+    try {
+      const index = this.searchClient.index(this.index)
+      const r = await index.search(q, {
+        attributesToHighlight: ['*'],
+      })
 
-    if (r.hits.length > 0) {
-      this.results = r.hits
-    }    
+      if (r.hits.length > 0) {
+        this.results = r.hits
+      } 
+    } catch (error) {
+      this.$message.error('Không thể kết nối search-service') 
+    }
   }
 }
 </script>

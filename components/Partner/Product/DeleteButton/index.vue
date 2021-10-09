@@ -21,7 +21,7 @@ import deleteProduct from "@/gql/mutations/deleteProduct.gql";
 import fetchProductImages from '@/gql/queries/fetchProductImages.gql'
 
 @Component({})
-export default class MediaDeleteButton extends Vue {
+export default class ProductDeleteButton extends Vue {
   @Prop() id: number;
 
   loading: boolean = false;
