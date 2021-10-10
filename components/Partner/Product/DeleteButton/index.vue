@@ -11,7 +11,7 @@
       icon="delete"
       type="link"
       style="color: #ff0074c4"
-    >Xóa</a-button>
+    ></a-button>
   </a-popconfirm>
 </template>
 

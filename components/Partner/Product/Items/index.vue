@@ -1,7 +1,7 @@
 <template>
   <div class="row" v-lazy-container="{ selector: 'img' }">
     <a-spin :spinning="loading">
-      <div :class="`col-lg-2 pt-8 ${filterable ? 'shadow-lg' : '' }`">
+      <div :class="`col-lg-2 pt-8 bg-gray-50 h-screen ${filterable ? 'shadow-lg' : '' }`">
         <p class="mb-4 filterable-header">
           <span>
             <a-icon type="filter" /> &nbsp; Bộ lọc
@@ -118,7 +118,7 @@
                   type="link"
                   icon="edit"
                   @click="$router.push(`/partner/product/edit/${record.id}`)"
-                >Sửa</a-button>
+                ></a-button>
                 <delete-button :id="record.id" />
               </template>
             </a-table>

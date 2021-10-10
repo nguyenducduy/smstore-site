@@ -1,0 +1,41 @@
+query fetchOrderDetail($id: Int!) {
+  orders_by_pk(id: $id) {
+    id
+    shipping_full_name
+    shipping_phone_number
+    shipping_address
+    shipping_email
+    note
+    is_paid
+    status
+    code
+    created_at
+    total_price
+    _status {
+      name
+    }
+    order_products {
+      id
+      quantity
+      sub_total
+      unit_price
+      options
+      product {
+        id
+        sku
+        in_stock
+        name
+        price
+        images(limit: 1) {
+          id
+          path
+        }
+      }
+    }
+    order_products_aggregate {
+      aggregate {
+        count(columns: id)
+      }
+    }
+  }
+}

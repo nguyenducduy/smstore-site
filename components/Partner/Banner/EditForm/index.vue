@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-8" v-if="product">
+  <div class="mt-8" v-if="banner">
     <a-spin :spinning="loading">
       <a-form :form="form" layout="vertical" :colon="false">
         <div class="row">
@@ -12,11 +12,11 @@
             </a-form-item>
             <a-form-item
             >
-              <section class="grid grid-cols-1 gap-4 mb-5 md:grid-cols-4" v-if="myFiles.length > 0">
-                <template v-for="(image, i) in myFiles">
+              <section class="grid grid-cols-1" v-if="myFiles.length > 0">
+                <template v-for="(path, i) in myFiles">
                   <div :key="i">
                      <a class="rounded-lg hover:opacity-75 " target="_blank">
-                        <img class="object-cover w-full h-64 rounded-lg" :src="$helper.getImage(image.path)"/>
+                        <img class="object-cover w-full h-auto rounded-lg" :src="$helper.getImage(path)"/>
                       </a>
                     <a-button icon="delete" size="small" type="danger" class="mt-2" @click="onRemoveImage(i)" />
                   </div>
@@ -84,28 +84,11 @@
                   ></a-input>
                 </a-form-item>
               </div>
-              <div class="col-lg-3">
-                <a-form-item label="Giá">
-                  <a-input-number
-                    style="width: 100%"
-                    :formatter="value => `đ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
-                    :parser="value => value.replace(/\đ\s?|(,*)/g, '')"
-                    v-decorator="[
-                      'price',
-                      {
-                        rules: [
-                          { required: true, message: 'Vui lòng nhập giá sản phẩm' }
-                        ]
-                      }
-                    ]"
-                  ></a-input-number>
-                </a-form-item>
-              </div>
             </div>
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-12 bg-blue-50 save-form-control">
+          <div class="col-lg-12 bg-gray-50 save-form-control">
             <a-form-item>
               <a-progress
                 v-show="loading"

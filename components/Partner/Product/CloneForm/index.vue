@@ -185,7 +185,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-12 bg-blue-50 save-form-control">
+          <div class="col-lg-12 bg-gray-50 save-form-control">
             <a-form-item>
               <a-progress
                 v-show="loading"
@@ -319,6 +319,10 @@ export default class PartnerProductCloneForm extends Vue {
     
     this.form.validateFields(async (err, values) => {
       if (!err) {
+        if (this.options.length == 0) {
+          return this.$message.warning(`Vui lòng nhập ít nhất 1 tùy chọn cho sản phẩm`)
+        } 
+        
         this.options.map(option => {
           if (option['values'].length > 0) {
             option['values'].map(value => {

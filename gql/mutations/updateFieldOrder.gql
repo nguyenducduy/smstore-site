@@ -1,0 +1,13 @@
+mutation updateFieldOrder(
+  $id: Int!
+  $fields: orders_set_input
+) {
+  update_orders(
+    where: {
+      id: { _eq: $id }
+    },
+    _set: $fields
+  ) {
+    affected_rows
+  } 
+}

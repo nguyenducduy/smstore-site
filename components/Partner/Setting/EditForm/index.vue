@@ -99,7 +99,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-12 bg-blue-50 save-form-control">
+          <div class="col-lg-12 bg-gray-50 save-form-control">
             <a-form-item>
               <a-progress
                 v-show="loading"

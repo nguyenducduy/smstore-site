@@ -1,0 +1,11 @@
+query countOrders(
+  $where: orders_bool_exp
+) {
+  orders_aggregate(
+    where: $where
+  ) {
+    aggregate {
+      count
+    }
+  }
+}

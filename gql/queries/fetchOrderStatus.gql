@@ -1,0 +1,6 @@
+query fetchOrderStatus {
+  order_status{
+    name
+    value
+  }
+}

@@ -1,23 +1,19 @@
 <template>
   <div class="row" v-lazy-container="{ selector: 'img' }">
     <a-spin :spinning="loading">
-      <div :class="`col-lg-2 pt-8 bg-gray-50 h-screen ${filterable ? 'shadow-lg' : '' }`">
-        <p class="mb-4 filterable-header">
-          <span>
-            <a-icon type="filter" /> &nbsp; Bộ lọc
-          </span>
-        </p>
-        <banners-filter-form />
+      <div :class="`col-lg-2 pt-8  bg-gray-50 h-screen ${filterable ? 'shadow-lg' : '' }`">
+        
+        <orders-filter-form />
       </div>
       <div class="col-lg-10">
         <div class="row">
           <div class="flex items-center mb-4 col-lg-6">
-            <bulk
+            <!-- <bulk
               class="mr-4"
               :actions="bulkActions"
               :selectedItems="selectedRowKeys"
               displaySelectedField="title"
-            />
+            /> -->
             <a-button
               size="small"
               type="link"
@@ -29,7 +25,7 @@
           </div>
           <div class="mb-4 text-right col-lg-6" style="line-height: 30px">
             <a-pagination
-              v-show="banners_aggregate"
+              v-show="orders_aggregate"
               size="small"
               :total="total"
               :current="currentPage"
@@ -52,61 +48,53 @@
             <a-table
               size="small"
               class="box-white"
-              :dataSource="banners"
+              :dataSource="orders"
               :columns="columns"
               :pagination="false"
               :rowKey="record => record.id"
               @change="onChange"
-              :row-selection="{
-                selectedRowKeys: selectedRowKeys,
-                onChange: onSelectChange
-              }"
             >
-              <template slot="_image" slot-scope="record">
-                <img :data-src="$helper.getImage(record.image_path)" />
-                <small>{{ record.link }}</small>
+              <template slot="_customer" slot-scope="record">
+                <p class="text-sm">{{ record.shipping_full_name }}</p>
+                <p class="font-bold">{{ record.shipping_phone_number }}</p>
               </template>
-              <template slot="_page" slot-scope="record">
-                <a-tag v-if="record.page === 'home'">
-                  Trang chủ
-                </a-tag>
-                <a-tag v-if="record.page === 'category'">
-                  Trang danh mục
-                </a-tag>
-                <a-tag v-if="record.page === 'detail'">
-                  Trang chi tiết sản phẩm
+              <template slot="_status" slot-scope="record">
+                <a-tag :color="_getStatusColor(record.status)">
+                  {{ record._status.name }}
                 </a-tag>
               </template>
-              <template slot="_orderNo" slot-scope="record">
-                <editable-order-no :id="record.id" :text="record.order_no" size="small" width="50" />
+              <template slot="_code" slot-scope="record">
+                <code class="text-sm">{{ record.code }}</code>
               </template>
-              <template slot="_isActive" slot-scope="record">
-                <a-tag color="green" v-if="record.is_active">
-                  Hiện
+              <template slot="_price" slot-scope="record">
+                <span class="font-mono text-xl">{{ record.total_price | number('0,0') }}</span>
+                &#8363;
+              </template>
+              <template slot="_createdAt" slot-scope="record">
+                {{ $moment(record.created_at).format('HH:mm, DD/MM/YYYY') }}
+              </template>
+               <template slot="_isPaid" slot-scope="record">
+                <a-tag color="green" v-if="record.is_paid">
+                  Đã thanh toán
                 </a-tag>
                 <a-tag v-else>
-                  Ẩn
+                  Chưa thanh toán
                 </a-tag>
               </template>
               <template slot="_actions" slot-scope="record">
-                <a-button
-                  type="link"
-                  icon="edit"
-                  @click="$router.push(`/partner/banner/edit/${record.id}`)"
-                ></a-button>
-                <delete-button :id="record.id" :imagePath="record.image_path" />
+                <order-detail-modal :orderCode="record.code" :orderId="record.id" />
               </template>
             </a-table>
           </div>
           <div class="mt-4 col-lg-6">
-            <bulk
+            <!-- <bulk
               :actions="bulkActions"
               :selectedItems="selectedRowKeys"
-            />
+            /> -->
           </div>
           <div class="mt-4 text-right col-lg-6">
             <a-pagination
-              v-show="banners_aggregate && filterable === false"
+              v-show="orders_aggregate && filterable === false"
               size="small"
               :total="total"
               :current="currentPage"
@@ -133,32 +121,35 @@
 import { Vue, Component, Watch } from "nuxt-property-decorator";
 import { Getter, Mutation } from 'vuex-class'
 import { getOrderBy, getFilterBy, initQs, createUrl } from "@/helper/paginate";
-import DeleteButton from "@/components/Partner/Banner/DeleteButton/index.vue";
-import Bulk from "@/components/Partner/Banner/Bulk/index.vue";
-import EditableOrderNo from "@/components/Partner/Banner/EditableOrderNo/index.vue";
-import BannersFilterForm from "@/components/Partner/Banner/FilterForm/index.vue";
+// import DeleteButton from "@/components/Partner/Banner/DeleteButton/index.vue";
+// import Bulk from "@/components/Partner/Banner/Bulk/index.vue";
+// import EditableOrderNo from "@/components/Partner/Banner/EditableOrderNo/index.vue";
+import OrdersFilterForm from "@/components/Partner/Order/FilterForm/index.vue";
+import OrderDetailModal from '@/components/Partner/Order/OderDetailModal/index.vue'
 
-import fetchBanners from "@/gql/queries/fetchBanners.gql";
-import countBanners from "@/gql/queries/countBanners.gql";
+import fetchOrders from "@/gql/queries/fetchOrders.gql";
+import countOrders from "@/gql/queries/countOrders.gql";
 
 @Component({
   components: {
-    DeleteButton,
-    Bulk,
-    EditableOrderNo,
-    BannersFilterForm
+    // DeleteButton,
+    // Bulk,
+    // EditableOrderNo,
+    OrdersFilterForm,
+    OrderDetailModal
   }
 })
-export default class PartnerBannerItems extends Vue {
-  @Getter('banners/pageSize') pageSize
-  @Mutation('banners/SET_PAGE_SIZE') setPageSize
-  @Watch('banners_aggregate')
+export default class PartnerOrderItems extends Vue {
+  @Getter('orders/pageSize') pageSize
+  @Mutation('orders/SET_PAGE_SIZE') setPageSize
+  @Watch('orders_aggregate')
   onAggregateChange() {
-    this.$bus.$emit('bc.total', this.banners_aggregate.aggregate.count); 
+    this.$bus.$emit('bc.total', this.orders_aggregate.aggregate.count); 
   }
 
-  banners: any = null;
-  banners_aggregate: any = null;
+  orderStatus: any = null
+  orders: any = null;
+  orders_aggregate: any = null;
 
   // items per page
   pageSizeOptions: any = ['10', '20', '30', '40']
@@ -173,28 +164,12 @@ export default class PartnerBannerItems extends Vue {
   // filter mode
   filterable: boolean = false;
 
-  //search
-  q: string = '';
-
-  //table properties
-  selectedRowKeys: any = [];
-
-  bulkActions: any = [
-    { action: "active", label: "Hiện" },
-    { action: "inactive", label: "Ẩn" },
-    { action: "delete", label: "Xóa" },
-  ];
-
   get total() {
-    if (this.banners_aggregate) {
-      return this.banners_aggregate.aggregate.count;
+    if (this.orders_aggregate) {
+      return this.orders_aggregate.aggregate.count;
     } else {
       return 0;
     }
-  }
-
-  get hasSelected() {
-    return this.selectedRowKeys.length > 0;
   }
 
   get columns() {
@@ -202,38 +177,40 @@ export default class PartnerBannerItems extends Vue {
     sortedInfo = sortedInfo || {};
 
     const columns: any = [
+      // {
+      //   title: "#",
+      //   align: "center",
+      //   key: "id",
+      //   dataIndex: "id",
+      //   sorter: true,
+      //   sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
+      // },
       {
-        title: "#",
+        title: "Mã ĐH",
+        scopedSlots: { customRender: "_code" },
         align: "center",
-        key: "id",
-        dataIndex: "id",
-        sorter: true,
-        sortOrder: sortedInfo.columnKey === "id" && sortedInfo.order
       },
       {
-        scopedSlots: { customRender: "_image" },
-        width: 300,
+        title: "Khách hàng",
+        scopedSlots: { customRender: "_customer" },
       },
       {
-        title: "Trang",
-        scopedSlots: { customRender: "_page" }
+        title: "Ngày giờ tạo",
+        scopedSlots: { customRender: "_createdAt" }
       },
       {
-        title: "Thứ tự",
-        scopedSlots: { customRender: "_orderNo" },
-        width: 150,
-        align: "center",
-        key: "order_no",
-        sorter: true,
-        sortOrder: sortedInfo.columnKey === "order_no" && sortedInfo.order,
+        title: "Tổng giá",
+        scopedSlots: { customRender: "_price" }
       },
       {
         title: "Trạng thái",
         align: "center",
-        scopedSlots: { customRender: "_isActive" },
-        key: "is_active",
-        sorter: true,
-        sortOrder: sortedInfo.columnKey === "is_published" && sortedInfo.order,
+        scopedSlots: { customRender: "_status" }
+      },
+      {
+        title: "Thanh toán?",
+        align: "center",
+        scopedSlots: { customRender: "_isPaid" }
       },
       {
         align: "right",
@@ -247,11 +224,6 @@ export default class PartnerBannerItems extends Vue {
   onChangePageSize(current, pageSize) {
     this.setPageSize(pageSize)
     this.__reload()
-  }
-
-  //table select event
-  onSelectChange(selectedRowKeys) {
-    this.selectedRowKeys = selectedRowKeys;
   }
 
   //table event
@@ -284,9 +256,8 @@ export default class PartnerBannerItems extends Vue {
     await this.__reload();
     
     // event hook
-    this.$bus.$on('banners.reload', () => {
+    this.$bus.$on('orders.reload', () => {
       this.__reload();
-      this.selectedRowKeys = [];
     });
   }
 
@@ -312,33 +283,31 @@ export default class PartnerBannerItems extends Vue {
     this.sortedInfo = currentSort;
     this.q = currentSearchText;
 
-    if (this.banners === null && this.banners_aggregate === null) {
-      
-      
+    if (this.orders === null && this.orders_aggregate === null) {
       let r = null
 
       r = await this.$apollo.query({
-        query: fetchBanners,
+        query: fetchOrders,
         variables: variables,
       })
-      this.banners = r.data.banners
+      this.orders = r.data.orders
 
       r = await this.$apollo.query({
-        query: countBanners,
+        query: countOrders,
         variables: {
           where: {
             _and: getFilterBy(this)
           }
         },
       })
-      this.banners_aggregate = r.data.banners_aggregate
+      this.orders_aggregate = r.data.orders_aggregate
 
-      this.$apollo.addSmartQuery('banners', {
-        query: fetchBanners,
+      this.$apollo.addSmartQuery('orders', {
+        query: fetchOrders,
         variables: variables
       })
-      this.$apollo.addSmartQuery('banners_aggregate', {
-        query: countBanners,
+      this.$apollo.addSmartQuery('orders_aggregate', {
+        query: countOrders,
         variables: {
           where: {
             _and: getFilterBy(this)
@@ -346,8 +315,8 @@ export default class PartnerBannerItems extends Vue {
         }
       })
     } else {
-      await this.$apollo.queries.banners.refetch(variables);
-      await this.$apollo.queries.banners_aggregate.refetch({
+      await this.$apollo.queries.orders.refetch(variables);
+      await this.$apollo.queries.orders_aggregate.refetch({
         where: {
           _and: getFilterBy(this)
         }
@@ -355,6 +324,30 @@ export default class PartnerBannerItems extends Vue {
     }
 
     this.loading = false;
+  }
+
+  _getStatusColor(statusValue) {
+    let color: string = ''
+
+    switch (statusValue) {
+      case 'pending':
+        color = '#fdcb6e'
+        break;
+      case 'confirmed':
+        color = '#0984e3'
+        break;
+      case 'shipping':
+        color = '#a29bfe'
+        break;
+      case 'done':
+        color = '#55efc4'
+        break;
+      case 'canceled':
+        color = '#e17055'
+        break;
+    }
+
+    return color
   }
 }
 </script>
