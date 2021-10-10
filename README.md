@@ -37,3 +37,5 @@ docker-compose up -d
 ```
 docker-compose exec smstore-site yarn add ant-design-vue
 ```
+
+deploy again
