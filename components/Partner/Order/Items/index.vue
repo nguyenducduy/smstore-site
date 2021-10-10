@@ -172,6 +172,8 @@ export default class PartnerOrderItems extends Vue {
     }
   }
 
+  q: string = ''
+
   get columns() {
     let { sortedInfo } = this;
     sortedInfo = sortedInfo || {};
